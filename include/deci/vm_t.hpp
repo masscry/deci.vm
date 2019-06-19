@@ -23,6 +23,7 @@ namespace deci {
 
     vm_t& operator = (const vm_t&) = delete;
     vm_t& operator = (vm_t&&) = delete;
+
   public:
 
     /**
@@ -42,11 +43,34 @@ namespace deci {
      */
     value_t* Pop();
 
+    /**
+     * Get value from stack top.
+     *
+     * @param depth how deep from top element required
+     * @return depth-th value from top, or throw exception
+     */
     value_t& Top(size_t depth) const;
+
+    /**
+     * Drop `total` elements from stack.
+     *
+     * @param total how many elements to drop
+     */
     void     Drop(int total);
+
+    /**
+     * Take elements from top and try to execute them.
+     */
     void     Run();
 
+    /**
+     * Default constructor.
+     */
     vm_t();
+
+    /**
+     * Destructor
+     */
     ~vm_t();
 
   };
