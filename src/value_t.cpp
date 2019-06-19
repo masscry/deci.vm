@@ -4,4 +4,8 @@
 
 namespace deci {
 
+  value_t::~value_t() {
+    ;
+  }
+
 }

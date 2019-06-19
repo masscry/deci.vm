@@ -6,10 +6,25 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(deci
   src/deci.cpp
+  src/value_t.cpp
+  src/vm_t.cpp
+  src/number_t.cpp
   include/deci.hpp
+  include/deci/function_t.hpp
+  include/deci/vm_t.hpp
+  include/deci/number_t.hpp
+  include/deci/func_lib.hpp
+  include/deci/value_t.hpp
 )
 
-target_include_directories(deci PUBLIC include)
+target_include_directories(deci
+  PRIVATE include/
+  SYSTEM INTERFACE include/)
+
+target_compile_options(deci PRIVATE
+  $<$<CXX_COMPILER_ID:MSVC>:/W4>
+  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>
+)
 
 add_executable(basic_test
   test/basic_test.cpp
