@@ -4,39 +4,63 @@
 
 namespace deci {
 
-  class sum_t: public function_t {
+  template<typename xclass>
+  class binop_t: public function_t {
 
-    sum_t(const sum_t&) = delete;
-    sum_t& operator =(const sum_t&) = delete;
+    binop_t(const binop_t&) = delete;
+    binop_t& operator =(const binop_t&) = delete;
 
-    sum_t(){
+    binop_t(){
       ;
     }
-
-    ~sum_t() {
+    
+    ~binop_t() {
       ;
     }
 
   public:
-
+    
     void Evaluate(vm_t&, stack_t& stack, stack_t&) override {
       number_t& a = dynamic_cast<number_t&>(stack.Top(1));
       number_t& b = dynamic_cast<number_t&>(stack.Top(0));
-      number_t result(a.Value() + b.Value());
+      number_t result(xclass::Execute(a.Value(), b.Value()));
       stack.Drop(2);
       stack.Push(result);
     }
 
     std::string ToText() override {
-      return std::string("deci::sum_t");
+      return xclass::ID();
     }
 
-    static sum_t& Instance() {
-      static sum_t self;
+    static binop_t& Instance() {
+      static binop_t self;
       return self;
     }
 
   };
+
+  #define DEFINE_XCLASS(NAME, ACTION)\
+  class NAME ## _xclass_t {\
+  public:\
+    static double Execute(double a, double b) {\
+      return a ACTION b;\
+    }\
+    static constexpr const char* ID() {\
+      return "deci::" # NAME;\
+    }\
+  }
+
+  DEFINE_XCLASS(sum, +);
+  DEFINE_XCLASS(sub, -);
+  DEFINE_XCLASS(mul, *);
+  DEFINE_XCLASS(div, /);
+
+  #undef XCLASS_DEFINE
+
+  typedef binop_t<sum_xclass_t> sum_t;
+  typedef binop_t<sub_xclass_t> sub_t;
+  typedef binop_t<mul_xclass_t> mul_t;
+  typedef binop_t<div_xclass_t> div_t;
 
 }
 
