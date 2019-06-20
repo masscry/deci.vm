@@ -3,16 +3,16 @@
 #include <cassert>
 
 deci::command_t commands[] = {
-  { deci::OP_PUSH,   deci::number_t(100).Copy()     },
-  { deci::OP_PUSH,   deci::number_t(10).Copy()      },
-  { deci::OP_PUSH,   deci::number_t(50).Copy()      },
-  { deci::OP_CALL,   deci::sum_t::Instance().Copy() },
-  { deci::OP_DROP,   deci::number_t(2).Copy()       },
-  { deci::OP_RESULT, nullptr                        },
-  { deci::OP_CALL,   deci::sum_t::Instance().Copy() },
-  { deci::OP_DROP,   deci::number_t(2).Copy()       },
-  { deci::OP_RESULT, nullptr                        },
-  { deci::OP_RETURN, nullptr                        }
+  { deci::OP_PUSH,   deci::number_t(100).Copy()         },
+  { deci::OP_PUSH,   deci::number_t(10).Copy()          },
+  { deci::OP_PUSH,   deci::number_t(50).Copy()          },
+  { deci::OP_CALL,   deci::sum_t::Instance().Copy()     },
+  { deci::OP_DROP,   deci::number_t(2).Copy()           },
+  { deci::OP_RESULT, deci::nothing_t::Instance().Copy() },
+  { deci::OP_CALL,   deci::sub_t::Instance().Copy()     },
+  { deci::OP_DROP,   deci::number_t(2).Copy()           },
+  { deci::OP_RESULT, deci::nothing_t::Instance().Copy() },
+  { deci::OP_RETURN, deci::nothing_t::Instance().Copy() }
 };
 
 int main(int argc, char* argv[]) {
