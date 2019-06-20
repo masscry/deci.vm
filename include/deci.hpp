@@ -14,6 +14,7 @@
 
 #include "deci/value_t.hpp"
 #include "deci/number_t.hpp"
+#include "deci/stack_t.hpp"
 #include "deci/vm_t.hpp"
 #include "deci/function_t.hpp"
 #include "deci/func_lib.hpp"

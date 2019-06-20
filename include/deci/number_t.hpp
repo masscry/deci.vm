@@ -2,6 +2,8 @@
 #ifndef __DECI_NUMBER_T_HEADER__
 #define __DECI_NUMBER_T_HEADER__
 
+#include <cstring>
+
 namespace deci {
 
   class number_t: public value_t {
@@ -31,6 +33,12 @@ namespace deci {
 
     void Delete() override {
       delete this;
+    }
+
+    std::string ToText() override {
+      char buffer[64];
+      snprintf(buffer, sizeof(buffer), "%e", this->val);
+      return std::string(buffer);
     }
 
     ~number_t();

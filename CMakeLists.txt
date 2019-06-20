@@ -9,6 +9,7 @@ add_library(deci
   src/value_t.cpp
   src/vm_t.cpp
   src/number_t.cpp
+  src/stack_t.cpp
   include/deci.hpp
   include/deci/function_t.hpp
   include/deci/vm_t.hpp

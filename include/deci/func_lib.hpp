@@ -19,12 +19,16 @@ namespace deci {
 
   public:
 
-    void Evaluate(vm_t& vm) {
-      number_t& a = dynamic_cast<number_t&>(vm.Top(1));
-      number_t& b = dynamic_cast<number_t&>(vm.Top(0));
+    void Evaluate(vm_t&, stack_t& stack) override {
+      number_t& a = dynamic_cast<number_t&>(stack.Top(1));
+      number_t& b = dynamic_cast<number_t&>(stack.Top(0));
       number_t result(a.Value() + b.Value());
-      vm.Drop(2);
-      vm.Push(result);
+      stack.Drop(2);
+      stack.Push(result);
+    }
+
+    std::string ToText() override {
+      return std::string("deci::sum_t");
     }
 
     static sum_t& Instance() {
