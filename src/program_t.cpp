@@ -1,4 +1,57 @@
 #include <deci.hpp>
+#include <cstring>
+#include <iostream>
+
+namespace {
+
+#define CHECK_OPCODE(SIG, OPCODE) if (strcmp(token, (SIG)) == 0) return (OPCODE)
+
+  deci::opcode_t SelectOpcode(const char* token) {
+
+    CHECK_OPCODE("nop"    ,  deci::OP_NOP    );
+    CHECK_OPCODE("arg"    ,  deci::OP_ARG    );
+    CHECK_OPCODE("push"   ,  deci::OP_PUSH   );
+    CHECK_OPCODE("resl"   ,  deci::OP_RESULT );
+    CHECK_OPCODE("drop"   ,  deci::OP_DROP   );
+    CHECK_OPCODE("call"   ,  deci::OP_CALL   );
+    CHECK_OPCODE("ret"    ,  deci::OP_RETURN );
+
+    return deci::OP_UNDEFINED;
+  }
+
+  double SelectNumber(const char* token) {
+    return atof(token);
+  }
+
+  deci::value_t* SelectBuiltin(const char* token) {
+    CHECK_OPCODE("sum", deci::sum_t::Instance().Copy());
+    CHECK_OPCODE("sub", deci::sum_t::Instance().Copy());
+    CHECK_OPCODE("mul", deci::sum_t::Instance().Copy());
+    CHECK_OPCODE("div", deci::sum_t::Instance().Copy());
+    return deci::nothing_t::Instance().Copy();
+  }
+
+  deci::value_t* SelectValue(const char* token) {
+    switch(token[0]) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        return deci::number_t(SelectNumber(token)).Copy();
+      default:
+        return SelectBuiltin(token);
+    }
+  }
+
+#undef CHECK_OPCODE
+
+}
 
 namespace deci
 {
@@ -57,5 +110,32 @@ namespace deci
       command.arg->Delete();
     }
   }
- 
+
+  program_t::source_t AssembleProgram(std::istream& input) {
+    program_t::source_t result;
+
+    while(!input.eof()) {
+      std::string opcodeToken;
+
+      input >> opcodeToken;
+
+      opcode_t opcode = SelectOpcode(opcodeToken.c_str());
+      switch (opcode) {
+      case OP_RESULT:
+      case OP_RETURN:
+        result.push_back({ opcode, nothing_t::Instance().Copy() });
+        break;
+      default:
+        {
+          std::string argToken;
+          input >> argToken;
+          result.push_back({ opcode, SelectValue(argToken.c_str()) });
+          break;
+        }
+      }
+    }
+
+    return std::move(result);
+  }
+
 } // namespace deci

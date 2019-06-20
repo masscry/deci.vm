@@ -13,6 +13,7 @@ namespace deci
 {
 
   enum opcode_t {
+    OP_UNDEFINED = -1,
     OP_NOP = 0,
     OP_ARG,
     OP_PUSH,
@@ -30,7 +31,10 @@ namespace deci
 
   class program_t: public function_t
   {
+  public:
     typedef std::vector<command_t> source_t;
+
+  private:
 
     source_t source;
     value_t* result;
@@ -47,7 +51,9 @@ namespace deci
     ~program_t();
 
   };
-    
+
+  program_t::source_t AssembleProgram(std::istream& input);
+
 } // namespace deci
 
 

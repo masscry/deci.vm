@@ -1,0 +1,10 @@
+push 100
+push 10
+push 50
+call sum
+drop 2
+resl
+call sub
+drop 2
+resl
+ret
