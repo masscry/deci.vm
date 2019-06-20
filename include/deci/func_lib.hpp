@@ -19,7 +19,7 @@ namespace deci {
 
   public:
 
-    void Evaluate(vm_t&, stack_t& stack) override {
+    void Evaluate(vm_t&, stack_t& stack, stack_t&) override {
       number_t& a = dynamic_cast<number_t&>(stack.Top(1));
       number_t& b = dynamic_cast<number_t&>(stack.Top(0));
       number_t result(a.Value() + b.Value());

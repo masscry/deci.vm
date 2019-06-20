@@ -16,8 +16,9 @@ namespace deci {
     switch (value.Type())
     {
     case value_t::FUNCTION: {
+      stack_t local;
       function_t& func = static_cast<function_t&>(value);
-      func.Evaluate(*this, this->GlobalStack());
+      func.Evaluate(*this, this->GlobalStack(), local);
       break;
     }
     default:
