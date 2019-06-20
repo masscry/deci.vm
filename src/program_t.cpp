@@ -98,8 +98,9 @@ namespace deci
   }
 
   program_t::program_t(const command_t* source, size_t sourceSize)
-    :source(source, source + sourceSize)
-    ,result(&nothing_t::Instance()) {
+    : refCount(0)
+    , source(source, source + sourceSize)
+    , result(&nothing_t::Instance()) {
       ;
   }
   
@@ -111,6 +112,24 @@ namespace deci
     }
   }
 
+  program_t* program_t::Create(const command_t* source, size_t sourceSize) {
+    program_t* result = new program_t(source, sourceSize);
+    result->refCount = 1;
+    return result;
+  }
+    
+  value_t* program_t::Copy() const {
+    ++this->refCount;
+    return const_cast<program_t*>(this);
+  }
+
+  void program_t::Delete() {
+    --this->refCount;
+    if (this->refCount == 0) {
+      delete this;
+    }
+  }
+
   program_t::source_t AssembleProgram(std::istream& input) {
     program_t::source_t result;
 
@@ -119,8 +138,14 @@ namespace deci
 
       input >> opcodeToken;
 
+      if (opcodeToken.size() == 0) {
+        break;
+      }
+
       opcode_t opcode = SelectOpcode(opcodeToken.c_str());
       switch (opcode) {
+      case OP_UNDEFINED:
+        throw std::runtime_error("Unknown opcode");
       case OP_RESULT:
       case OP_RETURN:
         result.push_back({ opcode, nothing_t::Instance().Copy() });

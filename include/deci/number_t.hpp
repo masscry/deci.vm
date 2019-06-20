@@ -6,6 +6,13 @@
 
 namespace deci {
 
+  /**
+   * @brief Basic number class.
+   * 
+   * We'll cut a lot of work, when we drop support for integer data types 
+   * altogether. So, all numbers in interpreter are double-precision floating point
+   * numbers.
+   */
   class number_t: public value_t {
 
     double val;

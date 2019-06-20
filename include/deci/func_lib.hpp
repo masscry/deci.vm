@@ -4,6 +4,11 @@
 
 namespace deci {
 
+  /**
+   * @brief Default binary operation template
+   * 
+   * Class implements boilerplate code for binary operations.
+   */
   template<typename xclass>
   class binop_t: public function_t {
 
@@ -20,16 +25,27 @@ namespace deci {
 
   public:
     
+    /**
+     * @brief Take top two arguments from global stack, evaluate and put result in result variable.
+     */
     void Evaluate(vm_t&, const stack_t& stack, stack_t& local) override {
       number_t& a = dynamic_cast<number_t&>(stack.Top(1));
       number_t& b = dynamic_cast<number_t&>(stack.Top(0));
       local.Result(number_t(xclass::Execute(a.Value(), b.Value())));
     }
 
+    /**
+     * @brief Each function has it's own ID
+     */
     std::string ToText() const override {
       return xclass::ID();
     }
 
+    /**
+     * @brief Single static instance of binary operation object.
+     * 
+     * We do not need more than one such object in program.
+     */
     static binop_t& Instance() {
       static binop_t self;
       return self;
@@ -37,6 +53,9 @@ namespace deci {
 
   };
 
+  /**
+   * @brief Macro to make binary operation definitions shorter
+   */
   #define DEFINE_XCLASS(NAME, ACTION)\
   class NAME ## _xclass_t {\
   public:\

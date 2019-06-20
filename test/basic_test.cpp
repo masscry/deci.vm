@@ -19,12 +19,13 @@ deci::command_t commands[] = {
 int noargs() {
   deci::value_t* tmp;
   deci::vm_t vm;
-  deci::program_t prog(commands, deci::countof(commands));
+  deci::program_t* prog = deci::program_t::Create(commands, deci::countof(commands));
 
-  vm.GlobalStack().Push(*(tmp = vm.Run(prog)));
+  vm.GlobalStack().Push(*(tmp = vm.Run(*prog)));
   vm.GlobalStack().Print(std::cout);
 
   tmp->Delete();
+  prog->Delete();
   return 0;
 }
 
@@ -44,12 +45,13 @@ int main(int argc, char* argv[]) {
 
   deci::value_t* tmp;
   deci::vm_t vm;
-  deci::program_t prog(source.data(), deci::countof(commands));
+  deci::program_t* prog = deci::program_t::Create(source.data(), deci::countof(commands));
 
-  vm.GlobalStack().Push(*(tmp = vm.Run(prog)));
+  vm.GlobalStack().Push(*(tmp = vm.Run(*prog)));
   vm.GlobalStack().Print(std::cout);
 
   tmp->Delete();
-  
+  prog->Delete();
+
   return 0;
 }
