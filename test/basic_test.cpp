@@ -1,5 +1,6 @@
 #include <deci.hpp>
 #include <iostream>
+#include <fstream>
 #include <cassert>
 
 deci::command_t commands[] = {
@@ -15,7 +16,7 @@ deci::command_t commands[] = {
   { deci::OP_RETURN, deci::nothing_t::Instance().Copy() }
 };
 
-int main(int argc, char* argv[]) {
+int noargs() {
   deci::value_t* tmp;
   deci::vm_t vm;
   deci::program_t prog(commands, deci::countof(commands));
@@ -24,5 +25,29 @@ int main(int argc, char* argv[]) {
   vm.GlobalStack().Print(std::cout);
 
   tmp->Delete();
+  return 0;
+}
+
+int main(int argc, char* argv[]) {
+  if (argc == 1) {
+    return noargs();
+  }
+
+  std::ifstream input;
+  input.open(argv[1], std::ios::in);
+  if (input.good())
+  {
+    deci::program_t::source_t source = deci::AssembleProgram(input);
+    input.close();
+
+    deci::value_t* tmp;
+    deci::vm_t vm;
+    deci::program_t prog(source.data(), deci::countof(commands));
+
+    vm.GlobalStack().Push(*(tmp = vm.Run(prog)));
+    vm.GlobalStack().Print(std::cout);
+
+    tmp->Delete();
+  }
   return 0;
 }

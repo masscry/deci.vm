@@ -25,9 +25,9 @@ namespace {
 
   deci::value_t* SelectBuiltin(const char* token) {
     CHECK_OPCODE("sum", deci::sum_t::Instance().Copy());
-    CHECK_OPCODE("sub", deci::sum_t::Instance().Copy());
-    CHECK_OPCODE("mul", deci::sum_t::Instance().Copy());
-    CHECK_OPCODE("div", deci::sum_t::Instance().Copy());
+    CHECK_OPCODE("sub", deci::sub_t::Instance().Copy());
+    CHECK_OPCODE("mul", deci::mul_t::Instance().Copy());
+    CHECK_OPCODE("div", deci::div_t::Instance().Copy());
     return deci::nothing_t::Instance().Copy();
   }
 
