@@ -30,7 +30,7 @@ namespace deci {
     virtual type_t Type() const = 0;
     virtual value_t* Copy() const = 0;
     virtual void Delete() = 0;
-    virtual std::string ToText() = 0;
+    virtual std::string ToText() const = 0;
     virtual ~value_t() = 0;
   };
 
@@ -50,7 +50,7 @@ namespace deci {
       return const_cast<nothing_t*>(this);
     }
 
-    std::string ToText() {
+    std::string ToText() const override {
       return std::move(std::string("nothing"));
     }
 

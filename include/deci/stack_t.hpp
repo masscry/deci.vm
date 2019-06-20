@@ -24,8 +24,18 @@ namespace deci
 
   public:
 
+    value_t* ReleaseResult() {
+      value_t* ret = this->result;
+      this->result = &nothing_t::Instance();
+      return ret;
+    }
+
     value_t& Result() const {
       return *this->result;
+    }
+
+    void Result(const value_t& val) {
+      this->result = val.Copy();
     }
 
     /**
@@ -114,16 +124,16 @@ namespace deci
 
     void Print(std::ostream& output);
     
-    stack_t(const stack_t& copy):storage(copy.storage) {
+    stack_t(const stack_t& copy):storage(copy.storage),result(&nothing_t::Instance()) {
       ;
     }
 
-    stack_t(stack_t&& move):storage(std::move(move.storage)) {
+    stack_t(stack_t&& move):storage(std::move(move.storage)),result(move.result) {
       ;
     }
 
     ~stack_t() {
-      ;
+      this->result->Delete();
     }
 
   };

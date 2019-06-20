@@ -7,7 +7,7 @@ namespace deci {
   class function_t: public value_t {
   public:
 
-    virtual void Evaluate(vm_t& vm, stack_t& stack, stack_t& local) = 0;
+    virtual void Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) = 0;
 
     value_t::type_t Type() const override {
       return value_t::FUNCTION;

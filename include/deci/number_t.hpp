@@ -35,7 +35,7 @@ namespace deci {
       delete this;
     }
 
-    std::string ToText() override {
+    std::string ToText() const override {
       char buffer[64];
       snprintf(buffer, sizeof(buffer), "%e", this->val);
       return std::string(buffer);

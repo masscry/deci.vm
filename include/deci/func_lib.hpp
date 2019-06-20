@@ -20,15 +20,13 @@ namespace deci {
 
   public:
     
-    void Evaluate(vm_t&, stack_t& stack, stack_t&) override {
+    void Evaluate(vm_t&, const stack_t& stack, stack_t& local) override {
       number_t& a = dynamic_cast<number_t&>(stack.Top(1));
       number_t& b = dynamic_cast<number_t&>(stack.Top(0));
-      number_t result(xclass::Execute(a.Value(), b.Value()));
-      stack.Drop(2);
-      stack.Push(result);
+      local.Result(number_t(xclass::Execute(a.Value(), b.Value())));
     }
 
-    std::string ToText() override {
+    std::string ToText() const override {
       return xclass::ID();
     }
 

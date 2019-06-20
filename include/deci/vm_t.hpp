@@ -28,7 +28,7 @@ namespace deci {
     /**
      * Run element in VM.
      */
-    void     Run(value_t& val);
+    value_t* Run(value_t& value);
 
     stack_t& GlobalStack() {
       return this->dataStack;

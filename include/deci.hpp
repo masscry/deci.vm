@@ -18,5 +18,22 @@
 #include "deci/vm_t.hpp"
 #include "deci/function_t.hpp"
 #include "deci/func_lib.hpp"
+#include "deci/program_t.hpp"
+
+namespace deci {
+  
+  template <typename T, size_t N>
+  constexpr size_t countof(T const (&)[N]) noexcept
+  {
+    return N;
+  }
+
+  template<typename T>
+  constexpr size_t countof(T const &item) noexcept
+  {
+    return item.size();
+  }
+
+}
 
 #endif /* __DECI_HEADER__ */
