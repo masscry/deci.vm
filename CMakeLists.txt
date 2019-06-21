@@ -4,6 +4,14 @@ project(decivm CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
+find_package(BISON REQUIRED)
+find_package(FLEX REQUIRED)
+
+BISON_TARGET(IEC61131_PARSER src/iec61131.y ${CMAKE_CURRENT_BINARY_DIR}/iec61131.y.cpp)
+FLEX_TARGET(IEC61131_SCANNER src/iec61131.l ${CMAKE_CURRENT_BINARY_DIR}/iec61131.l.cpp)
+
+ADD_FLEX_BISON_DEPENDENCY(IEC61131_SCANNER IEC61131_PARSER)
+
 add_library(deci
   src/deci.cpp
   src/value_t.cpp
@@ -24,6 +32,9 @@ add_library(deci
   include/deci/reference_t.hpp
   include/deci/array_t.hpp
   include/deci/dictionary_t.hpp
+
+  ${BISON_IEC61131_PARSER_OUTPUTS}
+  ${FLEX_IEC61131_SCANNER_OUTPUTS}
 )
 
 target_include_directories(deci
