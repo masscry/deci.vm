@@ -23,6 +23,10 @@ namespace deci {
       ;
     }
 
+    size_t DoHashing() const override {
+      return std::hash<const void*>()(this);
+    }
+
   public:
     
     /**

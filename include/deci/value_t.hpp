@@ -13,19 +13,35 @@
 namespace deci {
 
   class value_t {
+    mutable size_t hash;
+
+    virtual size_t DoHashing() const = 0;
+
   public:
 
     enum type_t {
       UNDEFINED = 0,
-      NUMBER,
-      STRING,
-      ARRAY,
-      DICTIONARY,
-      FUNCTION,
-      REFERENCE,
-      NOTHING,
+      NUMBER       ,
+      STRING       ,
+      ARRAY        ,
+      DICTIONARY   ,
+      FUNCTION     ,
+      REFERENCE    ,
+      NOTHING      ,
       TYPES_TOTAL
     };
+
+    size_t Hash() const {
+      if ((this->hash & 0x1) != 0x0) {
+        this->hash = this->DoHashing();
+        this->hash &= ~(1);
+      }
+      return this->hash;
+    }
+
+    value_t():hash(0x1) {
+      ;
+    }
 
     virtual type_t Type() const = 0;
     virtual value_t* Copy() const = 0;
@@ -38,6 +54,10 @@ namespace deci {
 
     ~nothing_t() {
       ;
+    }
+
+    size_t DoHashing() const override {
+      return 0;
     }
 
   public:

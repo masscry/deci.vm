@@ -54,6 +54,10 @@ namespace deci
     program_t(const command_t* source, size_t sourceSize);
     ~program_t();
 
+    size_t DoHashing() const override {
+      return std::hash<const void*>()(this);
+    }
+
   public:
 
     void Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) override;

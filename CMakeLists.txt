@@ -13,6 +13,7 @@ add_library(deci
   src/program_t.cpp
   src/reference_t.cpp
   src/array_t.cpp
+  src/dictionary_t.cpp
 
   include/deci.hpp
   include/deci/function_t.hpp
@@ -22,6 +23,7 @@ add_library(deci
   include/deci/value_t.hpp
   include/deci/reference_t.hpp
   include/deci/array_t.hpp
+  include/deci/dictionary_t.hpp
 )
 
 target_include_directories(deci

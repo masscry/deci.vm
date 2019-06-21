@@ -17,6 +17,10 @@ namespace deci {
       ref->Delete();
     }
 
+    size_t DoHashing() const override {
+      throw std::runtime_error("Invalid Operation");
+    }
+
   public:
 
     static reference_t* Create(value_t* ref) {
@@ -56,7 +60,7 @@ namespace deci {
       }
     }
 
-    std::string ToText() const {
+    std::string ToText() const override {
       return std::string("deci::reference_t");
     }
 

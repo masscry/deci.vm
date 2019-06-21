@@ -20,6 +20,7 @@
 #include "deci/func_lib.hpp"
 #include "deci/program_t.hpp"
 #include "deci/reference_t.hpp"
+#include "deci/dictionary_t.hpp"
 
 namespace deci {
   

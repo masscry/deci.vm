@@ -18,6 +18,10 @@ namespace deci
       }
     }
 
+    size_t DoHashing() const override {
+      throw std::runtime_error("Invalid Operation");
+    }
+
   public:
 
     array_t():elements() {

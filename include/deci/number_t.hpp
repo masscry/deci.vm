@@ -3,6 +3,7 @@
 #define __DECI_NUMBER_T_HEADER__
 
 #include <cstring>
+#include <algorithm>
 
 namespace deci {
 
@@ -16,6 +17,10 @@ namespace deci {
   class number_t: public value_t {
 
     double val;
+
+    size_t DoHashing() const override {
+      return std::hash<double>()(val);
+    }
 
   public:
 
