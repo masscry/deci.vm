@@ -19,6 +19,7 @@
 #include "deci/function_t.hpp"
 #include "deci/func_lib.hpp"
 #include "deci/program_t.hpp"
+#include "deci/reference_t.hpp"
 
 namespace deci {
   

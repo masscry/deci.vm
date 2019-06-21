@@ -11,12 +11,17 @@ add_library(deci
   src/number_t.cpp
   src/stack_t.cpp
   src/program_t.cpp
+  src/reference_t.cpp
+  src/array_t.cpp
+
   include/deci.hpp
   include/deci/function_t.hpp
   include/deci/vm_t.hpp
   include/deci/number_t.hpp
   include/deci/func_lib.hpp
   include/deci/value_t.hpp
+  include/deci/reference_t.hpp
+  include/deci/array_t.hpp
 )
 
 target_include_directories(deci
