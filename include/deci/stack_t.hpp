@@ -8,10 +8,6 @@
 #ifndef __DECI_STACK_HEADER__
 #define __DECI_STACK_HEADER__
 
-#include <vector>
-#include <cstddef>
-#include <stdexcept>
-
 namespace deci
 {
   class value_t;

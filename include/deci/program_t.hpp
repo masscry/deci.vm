@@ -61,7 +61,7 @@ namespace deci
     void Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) override;
 
     std::string ToText() const override;
-    
+
     static program_t* Create(const command_t* source, size_t sourceSize);
 
     value_t* Copy() const override;

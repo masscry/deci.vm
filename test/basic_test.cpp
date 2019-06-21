@@ -1,7 +1,4 @@
 #include <deci.hpp>
-#include <iostream>
-#include <fstream>
-#include <cassert>
 
 deci::command_t commands[] = {
   { deci::OP_PUSH,   deci::number_t(100).Copy()         },

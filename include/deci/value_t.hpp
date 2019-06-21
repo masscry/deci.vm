@@ -8,8 +8,6 @@
 #ifndef __DECI_VALUE_T_HEADER__
 #define __DECI_VALUE_T_HEADER__
 
-#include <string>
-
 namespace deci {
 
   class value_t {

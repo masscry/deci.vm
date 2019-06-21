@@ -1,7 +1,4 @@
 #include <deci.hpp>
-#include <stdexcept>
-#include <iostream>
-#include <iomanip>
 
 namespace deci {
 

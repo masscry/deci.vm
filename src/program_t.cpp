@@ -1,6 +1,4 @@
 #include <deci.hpp>
-#include <cstring>
-#include <iostream>
 
 namespace {
 

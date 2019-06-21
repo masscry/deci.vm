@@ -2,9 +2,6 @@
 #ifndef __DECI_DICTIONARY_HEADER__
 #define __DECI_DICTIONARY_HEADER__
 
-#include <deci.hpp>
-#include <unordered_map>
-
 namespace deci
 {
 

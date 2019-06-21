@@ -2,8 +2,6 @@
 #ifndef __DECI_ARRAY_HEADER__
 #define __DECI_ARRAY_HEADER__
 
-#include <deci.hpp>
-
 namespace deci
 {
 

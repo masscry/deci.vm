@@ -2,9 +2,6 @@
 #ifndef __DECI_NUMBER_T_HEADER__
 #define __DECI_NUMBER_T_HEADER__
 
-#include <cstring>
-#include <algorithm>
-
 namespace deci {
 
   /**

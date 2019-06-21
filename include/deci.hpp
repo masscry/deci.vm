@@ -8,9 +8,18 @@
 #ifndef __DECI_HEADER__
 #define __DECI_HEADER__
 
-#include <vector>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
+#include <cassert>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
 
 #include "deci/value_t.hpp"
 #include "deci/number_t.hpp"
