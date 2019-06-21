@@ -15,21 +15,53 @@
 
 %%
 
+\+              {
+                  return deci::parser_t::make_SUM();
+                }
 
-[+-/*]      { 
-              std::cout << "OPERATOR:" << yytext << std::endl;
-              return deci::parser_t::make_OPERATOR(*yytext); 
-            }
-            
-[1-9][0-9]* {
-              std::cout << "NUMBER:" << yytext << std::endl;
-              return deci::parser_t::make_NUMBER(atof(yytext));
-            }
+\-              {
+                  return deci::parser_t::make_SUB();
+                }
 
-<<EOF>>     { yyterminate(); }
+\*              {
+                  return deci::parser_t::make_MUL();
+                }
 
-.           { 
-  
-            }
-            
+\/              {
+                  return deci::parser_t::make_DIV();
+                }
+
+[0-9]+\.[0-9]*  {
+                  return deci::parser_t::make_NUMBER(atof(yytext));
+                }
+
+[0-9]+          {
+                  return deci::parser_t::make_NUMBER(atof(yytext));
+                }
+
+[)]             {
+                  return deci::parser_t::make_BCLOSE();
+                }
+
+[(]             {
+                  return deci::parser_t::make_BOPEN();
+                }
+
+
+[\n]            {
+                  return deci::parser_t::make_END();
+                }
+
+<<EOF>>         {
+                  return deci::parser_t::make_END();
+                }
+
+[ \t]           {
+                  // IGNORE SPACES;
+                }
+
+.               {
+                  throw deci::parser_t::syntax_error("Unknown symbol");
+                }
+
 %%

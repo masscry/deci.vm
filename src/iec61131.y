@@ -35,27 +35,43 @@
 
 %define api.token.prefix {TOK_}
 
-%token END 0 "end of file"
+%token END 0           "end of file"
 %token <double> NUMBER "number" 
-%token <char> OPERATOR "operator"
+%token BOPEN           "("
+%token BCLOSE          ")"
+%token SUM             "+"
+%token SUB             "-"
+%token MUL             "*"
+%token DIV             "/"
 
 %start entry
 
 %%
 
 entry
-  : END
-  | expr END
+  : expression_statement END
 ;
 
-expr
-  : item 
-  | expr item
+expression_statement
+  : %empty
+  | expression                { std::cout << "ret" << std::endl; }
 ;
 
-item
-  : NUMBER   {}
-  | OPERATOR {}
+expression
+  : mul_expr
+  | expression "+" mul_expr     { std::cout << "call sum" << std::endl << "drop 2" << std::endl << "resl" << std::endl; }
+  | expression "-" mul_expr     { std::cout << "call sub" << std::endl << "drop 2" << std::endl << "resl" << std::endl; }
+;
+
+mul_expr
+  : primary_expr
+  | mul_expr "*" primary_expr { std::cout << "call mul" << std::endl << "drop 2" << std::endl << "resl" << std::endl;; }
+  | mul_expr "/" primary_expr { std::cout << "call div" << std::endl << "drop 2" << std::endl << "resl" << std::endl;; }
+;
+
+primary_expr
+  : NUMBER                    { std::cout << "push " << $1 << std::endl; }
+  | "(" expression ")"
 
 %%
 
