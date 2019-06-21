@@ -1,26 +1,35 @@
-%option noyywrap
-
 %{
+  #include <deci.hpp>
+  #include <deci/scanner_t.hpp>
+	#include "iec61131.y.hpp"
 
-#include <stdexcept>
-#include "iec61131.y.hpp"
-#define YYSTYPE yy::parser::semantic_type  
-
-#define yyterminate() return yy::parser::token::END;
+	#define yyterminate() return deci::parser_t::make_END();
 
 %}
 
-%option debug
-%option bison-bridge
 %option nodefault
-
+%option noyywrap
+%option c++
+%option yyclass="deci_scanner_t"
+%option prefix="deci_"
 
 %%
 
-[0-9]+\.[0-9]+ { yylval->build<double>(atof(yytext)); return yy::parser::token::NUMBER;   }
-[0-9]+         { yylval->build<double>(atof(yytext)); return yy::parser::token::NUMBER;   }
-[+-/*]         { yylval->build<char>(*yytext);        return yy::parser::token::OPERATOR; }
 
-.              { throw yy::parser::syntax_error("Unexpected symbol"); }
+[+-/*]      { 
+              std::cout << "OPERATOR:" << yytext << std::endl;
+              return deci::parser_t::make_OPERATOR(*yytext); 
+            }
+            
+[1-9][0-9]* {
+              std::cout << "NUMBER:" << yytext << std::endl;
+              return deci::parser_t::make_NUMBER(atof(yytext));
+            }
 
+<<EOF>>     { yyterminate(); }
+
+.           { 
+  
+            }
+            
 %%

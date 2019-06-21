@@ -7,8 +7,17 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
-BISON_TARGET(IEC61131_PARSER src/iec61131.y ${CMAKE_CURRENT_BINARY_DIR}/iec61131.y.cpp)
-FLEX_TARGET(IEC61131_SCANNER src/iec61131.l ${CMAKE_CURRENT_BINARY_DIR}/iec61131.l.cpp)
+BISON_TARGET(
+  IEC61131_PARSER src/iec61131.y
+  ${CMAKE_CURRENT_BINARY_DIR}/iec61131.y.cpp
+  COMPILE_FLAGS --no-lines
+  DEFINES_FILE ${CMAKE_CURRENT_BINARY_DIR}/iec61131.y.hpp
+)
+
+FLEX_TARGET(
+  IEC61131_SCANNER src/iec61131.l 
+  ${CMAKE_CURRENT_BINARY_DIR}/iec61131.l.cpp
+)
 
 ADD_FLEX_BISON_DEPENDENCY(IEC61131_SCANNER IEC61131_PARSER)
 
@@ -22,6 +31,7 @@ add_library(deci
   src/reference_t.cpp
   src/array_t.cpp
   src/dictionary_t.cpp
+  src/compiler_t.cpp
 
   include/deci.hpp
   include/deci/function_t.hpp
@@ -32,13 +42,14 @@ add_library(deci
   include/deci/reference_t.hpp
   include/deci/array_t.hpp
   include/deci/dictionary_t.hpp
+  include/deci/compiler_t.hpp
 
   ${BISON_IEC61131_PARSER_OUTPUTS}
   ${FLEX_IEC61131_SCANNER_OUTPUTS}
 )
 
 target_include_directories(deci
-  PRIVATE include/
+  PRIVATE include/ ${CMAKE_CURRENT_BINARY_DIR}
   SYSTEM INTERFACE include/)
 
 target_compile_options(deci PRIVATE
@@ -57,3 +68,9 @@ add_executable(values_test
 )
 
 target_link_libraries(values_test PRIVATE deci)
+
+add_executable(compile_test
+  test/compile_test.cpp
+)
+
+target_link_libraries(compile_test PRIVATE deci)

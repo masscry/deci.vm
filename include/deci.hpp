@@ -31,6 +31,7 @@
 #include "deci/reference_t.hpp"
 #include "deci/array_t.hpp"
 #include "deci/dictionary_t.hpp"
+#include "deci/compiler_t.hpp"
 
 namespace deci {
   
