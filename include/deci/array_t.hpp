@@ -12,75 +12,37 @@ namespace deci
 
     element_t elements;
 
-    ~array_t() {
-      for (auto el: this->elements) {
-        el->Delete();
-      }
-    }
+    ~array_t();
 
-    size_t DoHashing() const override {
-      throw std::runtime_error("Invalid Operation");
-    }
+    size_t DoHashing() const override;
 
   public:
 
-    array_t():elements() {
-      ;
-    }
+    array_t();
 
-    array_t(const array_t& copy):elements() {
-      this->elements.reserve(copy.elements.size());
-      for (auto el: copy.elements) {
-        this->elements.push_back(el->Copy());
-      }
-    }
+    array_t(const array_t& copy);
 
-    bool Empty() const {
-      return this->elements.empty();
-    }
+    bool Empty() const;
 
-    size_t Size() const {
-      return this->elements.size();
-    }
+    size_t Size() const;
 
-    value_t& Element(int index) const {
-      return *this->elements.at(index);
-    }
+    value_t& Element(int index) const;
 
-    void Set(int index, value_t& el) {
-      this->elements.at(index)->Delete();
-      this->elements.at(index) = el.Copy();
-    }
+    void Set(int index, value_t& el);
 
-    void Insert(int index, value_t& el) {
-      this->elements.insert(this->elements.begin() + index, el.Copy());
-    }
+    void Insert(int index, value_t& el);
 
-    void Append(value_t& el) {
-      this->elements.push_back(el.Copy());
-    }
+    void Append(value_t& el);
 
-    void Pop() {
-      value_t* back = this->elements.back();
-      this->elements.pop_back();
-      back->Delete();
-    }
+    void Pop();
 
-    type_t Type() const override {
-      return value_t::ARRAY;
-    }
+    value_t::type_t Type() const override;
 
-    value_t* Copy() const override {
-      return new array_t(*this);
-    }
+    value_t* Copy() const override;
 
-    void Delete() override {
-      delete this;
-    }
+    void Delete() override;
     
-    std::string ToText() const override {
-      return std::string("deci::array_t");
-    }
+    std::string ToText() const override;
 
   };
 

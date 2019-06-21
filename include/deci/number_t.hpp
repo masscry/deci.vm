@@ -35,23 +35,13 @@ namespace deci {
 
     number_t& operator = (const number_t& copy);
 
-    value_t::type_t Type() const override {
-      return value_t::NUMBER;
-    }
+    value_t::type_t Type() const override;
 
-    value_t* Copy() const override {
-      return new number_t(*this);
-    }
+    value_t* Copy() const override;
 
-    void Delete() override {
-      delete this;
-    }
+    void Delete() override;
 
-    std::string ToText() const override {
-      char buffer[64];
-      snprintf(buffer, sizeof(buffer), "%e", this->val);
-      return std::string(buffer);
-    }
+    std::string ToText() const override;
 
     ~number_t();
   };

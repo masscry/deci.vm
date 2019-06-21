@@ -163,4 +163,12 @@ namespace deci
     return std::move(result);
   }
 
+  size_t program_t::DoHashing() const {
+    return std::hash<const void*>()(this);
+  }
+
+  std::string program_t::ToText() const {
+    return std::string("deci::program");
+  }
+
 } // namespace deci

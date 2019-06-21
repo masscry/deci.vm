@@ -54,18 +54,14 @@ namespace deci
     program_t(const command_t* source, size_t sourceSize);
     ~program_t();
 
-    size_t DoHashing() const override {
-      return std::hash<const void*>()(this);
-    }
+    size_t DoHashing() const override;
 
   public:
 
     void Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) override;
 
-    std::string ToText() const override {
-      return std::string("deci::program");
-    }
-
+    std::string ToText() const override;
+    
     static program_t* Create(const command_t* source, size_t sourceSize);
 
     value_t* Copy() const override;

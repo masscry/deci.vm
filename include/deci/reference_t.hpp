@@ -23,46 +23,23 @@ namespace deci {
 
   public:
 
-    static reference_t* Create(value_t* ref) {
-      reference_t* result = new reference_t(ref);
-      result->refCount = 1;
-      return result;
-    }
+    static reference_t* Create(value_t* ref);
 
-    value_t* Release() {
-      value_t* result = this->ref;
-      this->ref = nothing_t::Instance().Copy();
-      return result;
-    }
+    value_t* Release();
 
-    void Capture(value_t* newRef) {
-      this->Release()->Delete();
-      this->ref = newRef;
-    }
+    void Capture(value_t* newRef);
 
     value_t& Dereference() const {
       return *this->ref;
     }
 
-    value_t::type_t Type() const override {
-      return value_t::REFERENCE;
-    }
+    value_t::type_t Type() const override;
 
-    value_t* Copy() const override {
-      ++this->refCount;
-      return const_cast<reference_t*>(this);
-    }
+    value_t* Copy() const override;
 
-    void Delete() override {
-      --this->refCount;
-      if (this->refCount <= 0) {
-        delete this;
-      }
-    }
+    void Delete() override;
 
-    std::string ToText() const override {
-      return std::string("deci::reference_t");
-    }
+    std::string ToText() const override;
 
   };
   
