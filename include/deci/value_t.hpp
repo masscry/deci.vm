@@ -14,19 +14,26 @@ namespace deci {
     mutable size_t hash;
 
     virtual size_t DoHashing() const = 0;
+  
+  protected:
+
+    value_t(const value_t& copy):hash(copy.hash) {
+      ;
+    }
 
   public:
 
     enum type_t {
-      UNDEFINED = 0,
-      NUMBER       ,
-      STRING       ,
-      ARRAY        ,
-      DICTIONARY   ,
-      FUNCTION     ,
-      REFERENCE    ,
-      NOTHING      ,
-      TYPES_TOTAL
+      UNDEFINED   = -1,
+      TYPES_FIRST =  0,
+      NUMBER      = TYPES_FIRST,
+      STRING        ,
+      ARRAY         ,
+      DICTIONARY    ,
+      FUNCTION      ,
+      REFERENCE     ,
+      NOTHING       ,
+      TYPES_TOTAL 
     };
 
     size_t Hash() const {
@@ -69,7 +76,7 @@ namespace deci {
     }
 
     std::string ToText() const override {
-      return std::move(std::string("nothing"));
+      return std::move(std::string("deci::nothing"));
     }
 
     void Delete() override {

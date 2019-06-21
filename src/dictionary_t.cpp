@@ -39,7 +39,7 @@ namespace deci
     throw std::runtime_error("Invalid Operation");
   }
 
-  dictionary_t::dictionary_t(const dictionary_t& copy):storage() {
+  dictionary_t::dictionary_t(const dictionary_t& copy):value_t(), storage() {
     this->storage.reserve(copy.storage.size());
     for (auto el: copy.storage) {
       value_t* key = el.first->Copy();
@@ -55,7 +55,7 @@ namespace deci
     }
   }
   
-  dictionary_t::dictionary_t():storage() {
+  dictionary_t::dictionary_t():value_t(), storage() {
     ;
   }
 

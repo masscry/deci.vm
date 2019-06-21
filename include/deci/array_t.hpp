@@ -10,8 +10,6 @@ namespace deci
 
     element_t elements;
 
-    ~array_t();
-
     size_t DoHashing() const override;
 
   public:
@@ -20,17 +18,19 @@ namespace deci
 
     array_t(const array_t& copy);
 
+    ~array_t();
+
     bool Empty() const;
 
     size_t Size() const;
 
     value_t& Element(int index) const;
 
-    void Set(int index, value_t& el);
+    void Set(int index, const value_t& el);
 
-    void Insert(int index, value_t& el);
+    void Insert(int index, const value_t& el);
 
-    void Append(value_t& el);
+    void Append(const value_t& el);
 
     void Pop();
 

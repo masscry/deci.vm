@@ -9,7 +9,7 @@ namespace deci {
     value_t*    ref;
     mutable int refCount;
 
-    reference_t(value_t* ref):ref(ref),refCount(0) {
+    reference_t(value_t* ref):value_t(),ref(ref),refCount(0) {
       ;
     }
 

@@ -13,7 +13,7 @@ namespace deci
       throw std::runtime_error("Invalid Operation");
     }
 
-    array_t::array_t():elements() {
+    array_t::array_t():value_t(),elements() {
       ;
     }
 
@@ -36,20 +36,23 @@ namespace deci
       return *this->elements.at(index);
     }
 
-    void array_t::Set(int index, value_t& el) {
+    void array_t::Set(int index, const value_t& el) {
       this->elements.at(index)->Delete();
       this->elements.at(index) = el.Copy();
     }
 
-    void array_t::Insert(int index, value_t& el) {
+    void array_t::Insert(int index, const value_t& el) {
       this->elements.insert(this->elements.begin() + index, el.Copy());
     }
 
-    void array_t::Append(value_t& el) {
+    void array_t::Append(const value_t& el) {
       this->elements.push_back(el.Copy());
     }
 
     void array_t::Pop() {
+      if (this->Empty()) {
+        throw std::runtime_error("Empty Array");
+      }
       value_t* back = this->elements.back();
       this->elements.pop_back();
       back->Delete();

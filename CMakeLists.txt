@@ -40,3 +40,9 @@ add_executable(basic_test
 )
 
 target_link_libraries(basic_test PRIVATE deci)
+
+add_executable(values_test
+  test/values_test.cpp
+)
+
+target_link_libraries(values_test PRIVATE deci)

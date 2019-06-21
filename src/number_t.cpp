@@ -15,7 +15,7 @@ namespace deci {
   }
 
   number_t::number_t(const number_t& copy)
-    :val(copy.val)
+    :value_t(copy), val(copy.val)
   {
     ;
   }
