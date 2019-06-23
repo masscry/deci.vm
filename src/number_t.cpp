@@ -1,4 +1,5 @@
 #include <deci.hpp>
+#include <cfloat>
 
 namespace deci {
 
@@ -45,7 +46,7 @@ namespace deci {
 
   std::string number_t::ToText() const {
     char buffer[64];
-    snprintf(buffer, sizeof(buffer), "%e", this->val);
+    snprintf(buffer, sizeof(buffer), "%.*g", DECIMAL_DIG, this->val);
     return std::string(buffer);
   }
 
