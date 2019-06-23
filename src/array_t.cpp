@@ -17,7 +17,7 @@ namespace deci
       ;
     }
 
-    array_t::array_t(const array_t& copy):elements() {
+    array_t::array_t(const array_t& copy):value_t(),elements() {
       this->elements.reserve(copy.elements.size());
       for (auto el: copy.elements) {
         this->elements.push_back(el->Copy());
