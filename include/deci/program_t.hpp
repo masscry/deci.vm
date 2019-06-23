@@ -24,6 +24,7 @@ namespace deci
     OP_DROP           , /**< Drop N elements from local stack */
     OP_CALL           , /**< Call provided function, local stack becomes global for called function */
     OP_RETURN         , /**< Set result-register to top value from stack */
+    OP_BIN            , /**< OP_CALL func, DROP 2, RESL */
     OP_TOTAL            /**< Total opcodes */
   };
 
@@ -42,6 +43,7 @@ namespace deci
    */
   class program_t: public function_t
   {
+
   public:
     typedef std::vector<command_t> source_t;
 

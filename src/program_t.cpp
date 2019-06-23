@@ -13,6 +13,7 @@ namespace {
     CHECK_OPCODE("drop"   ,  deci::OP_DROP   );
     CHECK_OPCODE("call"   ,  deci::OP_CALL   );
     CHECK_OPCODE("ret"    ,  deci::OP_RETURN );
+    CHECK_OPCODE("bin"    ,  deci::OP_BIN    );
 
     return deci::OP_UNDEFINED;
   }
@@ -53,6 +54,12 @@ namespace {
 
 namespace deci
 {
+  static inline value_t* EvaluateCALL(const command_t& command, vm_t& vm, stack_t& local) {
+    stack_t temp;
+    function_t& func = *static_cast<function_t*>(command.arg);
+    func.Evaluate(vm, local, temp);
+    return temp.ReleaseResult();
+  }
 
   void program_t::Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) {
     for (auto command: this->source) {
@@ -60,7 +67,7 @@ namespace deci
       case OP_NOP:
         break;
       case OP_ARG:
-      { 
+      {
         number_t& num = *static_cast<number_t*>(command.arg);
         local.Push(stack.Top(static_cast<size_t>(num.Value())));
         break;
@@ -75,20 +82,23 @@ namespace deci
         break;
       }
       case OP_CALL:
-      {
-        stack_t temp;
-        function_t& func = *static_cast<function_t*>(command.arg);
-        func.Evaluate(vm, local, temp);
         this->result->Delete();
-        this->result = temp.ReleaseResult();
+        this->result = EvaluateCALL(command, vm, local);
         break;
-      }
       case OP_RESULT:
         local.Push(*this->result);
         break;
       case OP_RETURN:
         local.Result(local.Top(0));
         break;
+      case OP_BIN:
+      {
+        this->result->Delete();
+        this->result = EvaluateCALL(command, vm, local);
+        local.Drop(2);
+        local.Push(*this->result);
+        break;
+      }
       default:
         throw std::runtime_error("Unknown Operation Code");
       }
