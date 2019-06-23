@@ -28,7 +28,9 @@
 }
 
 %lex-param   { deci_scanner_t& scanner }
+
 %parse-param { deci_scanner_t& scanner }
+%parse-param { std::ostream& output }
 
 %define parse.trace
 %define parse.error verbose
@@ -49,32 +51,32 @@
 %%
 
 entry
-  : expression_statement END
+  : expression_statement
 ;
 
 expression_statement
   : %empty
-  | expression                { std::cout << "ret" << std::endl; }
+  | expression                { output << "ret" << std::endl; }
 ;
 
 expression
   : mul_expr
-  | expression "+" mul_expr     { std::cout << "call sum" << std::endl << "drop 2" << std::endl << "resl" << std::endl; }
-  | expression "-" mul_expr     { std::cout << "call sub" << std::endl << "drop 2" << std::endl << "resl" << std::endl; }
+  | expression "+" mul_expr     { output << "bin sum" << std::endl; }
+  | expression "-" mul_expr     { output << "bin sub" << std::endl; }
 ;
 
 mul_expr
   : primary_expr
-  | mul_expr "*" primary_expr { std::cout << "call mul" << std::endl << "drop 2" << std::endl << "resl" << std::endl;; }
-  | mul_expr "/" primary_expr { std::cout << "call div" << std::endl << "drop 2" << std::endl << "resl" << std::endl;; }
+  | mul_expr "*" primary_expr { output << "bin mul" << std::endl; }
+  | mul_expr "/" primary_expr { output << "bin div" << std::endl; }
 ;
 
 primary_expr
-  : NUMBER                    { std::cout << "push " << $1 << std::endl; }
+  : NUMBER                    { output << "push " << $1 << std::endl; }
   | "(" expression ")"
 
 %%
 
 void deci::parser_t::error(const std::string & msg) {
-  std::cout << msg << std::endl;
+  std::cerr << msg << std::endl;
 }

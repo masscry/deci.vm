@@ -56,7 +56,7 @@
                   return deci::parser_t::make_END();
                 }
 
-[ \t]           {
+[ \t\v]         {
                   // IGNORE SPACES;
                 }
 
