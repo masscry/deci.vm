@@ -25,6 +25,8 @@ namespace deci
     OP_CALL           , /**< Call provided function, local stack becomes global for called function */
     OP_RETURN         , /**< Set result-register to top value from stack */
     OP_BIN            , /**< OP_CALL func, DROP 2, RESL */
+    OP_RVAL           , /**< Get value from context and push on stack top */
+    OP_SET            , /**< Take value from stack top and save to context */
     OP_TOTAL            /**< Total opcodes */
   };
 

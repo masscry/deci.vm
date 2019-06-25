@@ -21,11 +21,22 @@ FLEX_TARGET(
 
 ADD_FLEX_BISON_DEPENDENCY(IEC61131_SCANNER IEC61131_PARSER)
 
+add_library(deci_scan_parse
+  ${BISON_IEC61131_PARSER_OUTPUTS}
+  ${FLEX_IEC61131_SCANNER_OUTPUTS}
+)
+
+target_include_directories(deci_scan_parse
+  PRIVATE include/ ${CMAKE_CURRENT_BINARY_DIR}
+  SYSTEM INTERFACE include/
+)
+
 add_library(deci
   src/deci.cpp
   src/value_t.cpp
   src/vm_t.cpp
   src/number_t.cpp
+  src/string_t.cpp
   src/stack_t.cpp
   src/program_t.cpp
   src/reference_t.cpp
@@ -37,24 +48,28 @@ add_library(deci
   include/deci/function_t.hpp
   include/deci/vm_t.hpp
   include/deci/number_t.hpp
+  include/deci/string_t.hpp
   include/deci/func_lib.hpp
   include/deci/value_t.hpp
   include/deci/reference_t.hpp
   include/deci/array_t.hpp
   include/deci/dictionary_t.hpp
   include/deci/compiler_t.hpp
+)
 
-  ${BISON_IEC61131_PARSER_OUTPUTS}
-  ${FLEX_IEC61131_SCANNER_OUTPUTS}
+target_link_libraries(deci PRIVATE 
+  deci_scan_parse
 )
 
 target_include_directories(deci
   PRIVATE include/ ${CMAKE_CURRENT_BINARY_DIR}
-  SYSTEM INTERFACE include/)
+  SYSTEM INTERFACE include/
+)
 
 target_compile_options(deci PRIVATE
   $<$<CXX_COMPILER_ID:MSVC>:/W4>
-  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -pedantic>
+  $<$<CXX_COMPILER_ID:GNU>:-Wall -Wextra -pedantic -ggdb>
+  $<$<CXX_COMPILER_ID:Clang>:-Wall -Wextra -pedantic -ggdb>
 )
 
 add_executable(basic_test

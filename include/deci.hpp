@@ -23,14 +23,15 @@
 
 #include "deci/value_t.hpp"
 #include "deci/number_t.hpp"
+#include "deci/string_t.hpp"
+#include "deci/reference_t.hpp"
+#include "deci/array_t.hpp"
+#include "deci/dictionary_t.hpp"
 #include "deci/stack_t.hpp"
 #include "deci/vm_t.hpp"
 #include "deci/function_t.hpp"
 #include "deci/func_lib.hpp"
 #include "deci/program_t.hpp"
-#include "deci/reference_t.hpp"
-#include "deci/array_t.hpp"
-#include "deci/dictionary_t.hpp"
 #include "deci/compiler_t.hpp"
 
 namespace deci {

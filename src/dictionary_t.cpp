@@ -18,7 +18,9 @@ namespace deci
       return static_cast<const number_t*>(lhs)->Value()
         == static_cast<const number_t*>(rhs)->Value();
     case value_t::STRING:
-      throw std::runtime_error("String comparison is not implemented yet");
+      return static_cast<const string_t*>(lhs)->Value().compare(
+        static_cast<const string_t*>(rhs)->Value()
+      ) == 0;
     case value_t::ARRAY:
       throw std::runtime_error("Array comparison is not possible");
     case value_t::DICTIONARY:
@@ -37,26 +39,6 @@ namespace deci
   
   size_t dictionary_t::DoHashing() const {
     throw std::runtime_error("Invalid Operation");
-  }
-
-  dictionary_t::dictionary_t(const dictionary_t& copy):value_t(), storage() {
-    this->storage.reserve(copy.storage.size());
-    for (auto el: copy.storage) {
-      value_t* key = el.first->Copy();
-      value_t* value = el.second->Copy();
-      this->storage.insert(std::make_pair(key,value));
-    }
-  }
-
-  dictionary_t::~dictionary_t() {
-    for (auto el: this->storage) {
-      el.first->Delete();
-      el.second->Delete();
-    }
-  }
-  
-  dictionary_t::dictionary_t():value_t(), storage() {
-    ;
   }
 
   void dictionary_t::Put(const value_t& key, const value_t& value) {
@@ -102,6 +84,74 @@ namespace deci
 
   std::string dictionary_t::ToText() const {
     return std::string("deci::dictionary_t");
+  }
+
+  void dictionary_t::Insert(const dictionary_t& src) {
+    for (auto el: src.storage) {
+      storage_t::iterator it = this->storage.find(el.first);
+      if (it == this->storage.end())
+      {
+        this->storage.insert(std::make_pair(el.first->Copy(), el.second->Copy()));
+      }
+      else
+      {
+        it->second = el.second->Copy();
+      }
+    }
+  }
+
+  dictionary_t::dictionary_t(const dictionary_t& copy):value_t(), storage() {
+    this->storage.reserve(copy.storage.size());
+    for (auto el: copy.storage) {
+      value_t* key = el.first->Copy();
+      value_t* value = el.second->Copy();
+      this->storage.insert(std::make_pair(key,value));
+    }
+  }
+
+  dictionary_t::dictionary_t(dictionary_t&& move):value_t(), storage(std::move(move.storage)) {
+    ;
+  }
+
+  dictionary_t& dictionary_t::operator = (const dictionary_t& copy) {
+    if (this != &copy) {
+      for (auto el: this->storage) {
+        el.first->Delete();
+        el.second->Delete();
+      }
+      this->storage.clear();
+
+      this->storage.reserve(copy.storage.size());
+      for (auto el: copy.storage) {
+        value_t* key = el.first->Copy();
+        value_t* value = el.second->Copy();
+        this->storage.insert(std::make_pair(key,value));
+      }
+    }
+    return *this;
+  }
+
+  dictionary_t& dictionary_t::operator = (dictionary_t&& move) {
+    if (this != &move) {
+      for (auto el: this->storage) {
+        el.first->Delete();
+        el.second->Delete();
+      }
+      this->storage.clear();
+      this->storage = std::move(move.storage);
+    }
+    return *this;
+  }
+
+  dictionary_t::~dictionary_t() {
+    for (auto el: this->storage) {
+      el.first->Delete();
+      el.second->Delete();
+    }
+  }
+  
+  dictionary_t::dictionary_t():value_t(), storage() {
+    ;
   }
   
 } // namespace deci

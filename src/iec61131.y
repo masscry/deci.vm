@@ -38,41 +38,55 @@
 %define api.token.prefix {TOK_}
 
 %token END 0           "end of file"
-%token <double> NUMBER "number" 
-%token BOPEN           "("
-%token BCLOSE          ")"
-%token SUM             "+"
-%token SUB             "-"
-%token MUL             "*"
-%token DIV             "/"
+
+
+%token <double>      NUMBER     "number" 
+%token <std::string> IDENTIFIER "identifier"
+%token               BOPEN      "("
+%token               BCLOSE     ")"
+%token               SUM        "+"
+%token               SUB        "-"
+%token               MUL        "*"
+%token               DIV        "/"
+%token               ASSIGN     ":="
 
 %start entry
 
 %%
 
-entry
-  : expression_statement
+entry:
+    expression_statement
 ;
 
-expression_statement
-  : %empty
-  | expression                { output << "ret" << std::endl; }
+expression_statement:
+    %empty
+  | expression                
 ;
 
-expression
-  : mul_expr
-  | expression "+" mul_expr     { output << "bin sum" << std::endl; }
-  | expression "-" mul_expr     { output << "bin sub" << std::endl; }
+expression:
+    assign_expr
 ;
 
-mul_expr
-  : primary_expr
+assign_expr:
+    add_expr                 { output << "ret" << std::endl;        }
+  | IDENTIFIER ":=" add_expr { output << "set " << $1 << std::endl; }
+;
+
+add_expr:
+    mul_expr
+  | add_expr "+" mul_expr     { output << "bin sum" << std::endl; }
+  | add_expr "-" mul_expr     { output << "bin sub" << std::endl; }
+;
+
+mul_expr:
+    primary_expr
   | mul_expr "*" primary_expr { output << "bin mul" << std::endl; }
   | mul_expr "/" primary_expr { output << "bin div" << std::endl; }
 ;
 
-primary_expr
-  : NUMBER                    { output << "push " << $1 << std::endl; }
+primary_expr:
+    NUMBER                    { output << "push " << $1 << std::endl; }
+  | IDENTIFIER                { output << "rval " << $1 << std::endl; }
   | "(" expression ")"
 
 %%

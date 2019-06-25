@@ -78,7 +78,7 @@ namespace deci {
     }
 
     std::string ToText() const override {
-      return std::move(std::string("deci::nothing"));
+      return std::string("deci::nothing");
     }
 
     void Delete() override {

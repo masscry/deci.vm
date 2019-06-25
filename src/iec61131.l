@@ -7,6 +7,7 @@
 
 %}
 
+%option caseless
 %option nodefault
 %option noyywrap
 %option c++
@@ -15,53 +16,61 @@
 
 %%
 
-\+              {
-                  return deci::parser_t::make_SUM();
-                }
+[A-Z_][A-Z0-9_]*  {
+                    return deci::parser_t::make_IDENTIFIER(yytext);
+                  }
 
-\-              {
-                  return deci::parser_t::make_SUB();
-                }
+[0-9]+\.[0-9]*    {
+                    return deci::parser_t::make_NUMBER(atof(yytext));
+                  }
 
-\*              {
-                  return deci::parser_t::make_MUL();
-                }
+[0-9]+            {
+                    return deci::parser_t::make_NUMBER(atof(yytext));
+                  }
 
-\/              {
-                  return deci::parser_t::make_DIV();
-                }
+:=                {
+                    return deci::parser_t::make_ASSIGN();
+                  }
 
-[0-9]+\.[0-9]*  {
-                  return deci::parser_t::make_NUMBER(atof(yytext));
-                }
+\+                {
+                    return deci::parser_t::make_SUM();
+                  }
 
-[0-9]+          {
-                  return deci::parser_t::make_NUMBER(atof(yytext));
-                }
+\-                {
+                    return deci::parser_t::make_SUB();
+                  }
 
-[)]             {
-                  return deci::parser_t::make_BCLOSE();
-                }
+\*                {
+                    return deci::parser_t::make_MUL();
+                  }
 
-[(]             {
-                  return deci::parser_t::make_BOPEN();
-                }
+\/                {
+                    return deci::parser_t::make_DIV();
+                  }
+
+[)]               {
+                    return deci::parser_t::make_BCLOSE();
+                  }
+
+[(]               {
+                    return deci::parser_t::make_BOPEN();
+                  }
 
 
-[\n]            {
-                  return deci::parser_t::make_END();
-                }
+[\n]              {
+                    return deci::parser_t::make_END();
+                  }
 
-<<EOF>>         {
-                  return deci::parser_t::make_END();
-                }
+<<EOF>>           {
+                    return deci::parser_t::make_END();
+                  }
 
-[ \t\v]         {
-                  // IGNORE SPACES;
-                }
+[ \t\v]           {
+                    // IGNORE SPACES;
+                  }
 
-.               {
-                  throw deci::parser_t::syntax_error("Unknown symbol");
-                }
+.                 {
+                    throw deci::parser_t::syntax_error("Unknown symbol");
+                  }
 
 %%

@@ -16,7 +16,8 @@ namespace deci {
     case value_t::FUNCTION: {
       stack_t local;
       function_t& func = static_cast<function_t&>(value);
-      func.Evaluate(*this, this->GlobalStack(), local);
+      func.Evaluate(*this, this->dataStack, local);
+      this->dataStack.MergeVariable(local);
       return local.ReleaseResult();
     }
     default:

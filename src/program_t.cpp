@@ -14,6 +14,8 @@ namespace {
     CHECK_OPCODE("call"   ,  deci::OP_CALL   );
     CHECK_OPCODE("ret"    ,  deci::OP_RETURN );
     CHECK_OPCODE("bin"    ,  deci::OP_BIN    );
+    CHECK_OPCODE("rval"   ,  deci::OP_RVAL   );
+    CHECK_OPCODE("set"    ,  deci::OP_SET    );
 
     return deci::OP_UNDEFINED;
   }
@@ -27,7 +29,7 @@ namespace {
     CHECK_OPCODE("sub", deci::sub_t::Instance().Copy());
     CHECK_OPCODE("mul", deci::mul_t::Instance().Copy());
     CHECK_OPCODE("div", deci::div_t::Instance().Copy());
-    return deci::nothing_t::Instance().Copy();
+    return deci::string_t(token).Copy();
   }
 
   deci::value_t* SelectValue(const char* token) {
@@ -99,6 +101,27 @@ namespace deci
         local.Push(*this->result);
         break;
       }
+      case OP_RVAL:
+      {
+        const value_t& loc_value = local.Variable(*command.arg);       
+        if (&loc_value != &nothing_t::Instance()) {
+          local.Push(loc_value);
+          break;
+        }
+        const value_t& glob_value = stack.Variable(*command.arg);
+        if (&glob_value != &nothing_t::Instance()) {
+          local.Push(glob_value);
+          break;
+        }
+        local.Push(nothing_t::Instance());
+        break;
+      }
+      case OP_SET:
+      {
+        local.Variable(*command.arg, local.Top(0));
+        local.Drop(1);
+        break;
+      }
       default:
         throw std::runtime_error("Unknown Operation Code");
       }
@@ -168,7 +191,7 @@ namespace deci
       }
     }
 
-    return std::move(result);
+    return result;
   }
 
   size_t program_t::DoHashing() const {

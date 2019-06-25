@@ -21,17 +21,23 @@ namespace deci
 
     size_t DoHashing() const override;
 
-    dictionary_t(const dictionary_t& copy);
-
-    ~dictionary_t();
-
   public:
 
     dictionary_t();
 
+    ~dictionary_t();
+
+    dictionary_t(const dictionary_t& copy);
+    dictionary_t(dictionary_t&& move);
+
+    dictionary_t& operator = (const dictionary_t& copy);
+    dictionary_t& operator = (dictionary_t&& move);
+
     void Put(const value_t& key, const value_t& value);
 
     void Remove(const value_t& key);
+
+    void Insert(const dictionary_t& src);
 
     const value_t& Get(const value_t& key) const;
 
