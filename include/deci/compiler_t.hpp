@@ -5,6 +5,9 @@
 namespace deci
 {
   
+  /**
+   * Reads input stream, creates assembled program code.
+   */
   program_t::source_t CompileExpression(std::istream& input);
 
 } // namespace deci
