@@ -49,6 +49,9 @@
 %token               MUL        "*"
 %token               DIV        "/"
 %token               ASSIGN     ":="
+%token               COMMA      ","
+
+%type  <int>         argument_list "argument list"
 
 %start entry
 
@@ -79,9 +82,20 @@ add_expr:
 ;
 
 mul_expr:
+    postfix_expr
+  | mul_expr "*" postfix_expr { output << "bin mul" << std::endl; }
+  | mul_expr "/" postfix_expr { output << "bin div" << std::endl; }
+;
+
+postfix_expr:
     primary_expr
-  | mul_expr "*" primary_expr { output << "bin mul" << std::endl; }
-  | mul_expr "/" primary_expr { output << "bin div" << std::endl; }
+  | IDENTIFIER "(" ")"                { output << "call " << $1 << "\nresl" << std::endl; }
+  | IDENTIFIER "(" argument_list ")"  { output << "call " << $1 << "\ndrop " << $3 << "\nresl" << std::endl; }
+;
+
+argument_list:
+    add_expr                          { $$ = 1;      }
+  | argument_list "," add_expr        { $$ = $1 + 1; }
 ;
 
 primary_expr:

@@ -44,6 +44,10 @@
                     return deci::parser_t::make_MUL();
                   }
 
+,                 {
+                    return deci::parser_t::make_COMMA();
+                  }
+
 \/                {
                     return deci::parser_t::make_DIV();
                   }
