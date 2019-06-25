@@ -88,6 +88,7 @@ primary_expr:
     NUMBER                    { output << "push " << $1 << std::endl; }
   | IDENTIFIER                { output << "rval " << $1 << std::endl; }
   | "(" expression ")"
+;
 
 %%
 
