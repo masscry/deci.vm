@@ -22,7 +22,6 @@ namespace deci {
     }
     default:
       throw std::runtime_error("Unknown value type to run");
-      break;
     }
   }
 
