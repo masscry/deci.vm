@@ -48,6 +48,8 @@ namespace deci {
       ;
     }
 
+    inline bool IsNothing() const;
+
     virtual type_t Type() const = 0;
     virtual value_t* Copy() const = 0;
     virtual void Delete() = 0;
@@ -89,6 +91,10 @@ namespace deci {
     }
     
   };
+
+  bool value_t::IsNothing() const {
+    return this == &nothing_t::Instance();
+  }
 
 }
 

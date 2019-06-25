@@ -13,7 +13,10 @@ int main(int argc, char* argv[]) {
     deci::value_t* result = vm.Run(*prog);
     prog->Delete();
 
-    std::cout << result->ToText() << std::endl;
+    if (!result->IsNothing())
+    {
+      std::cout << result->ToText() << std::endl;
+    }
     result->Delete();
   }
 
