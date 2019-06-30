@@ -8,7 +8,7 @@ namespace deci
   /**
    * Reads input stream, creates assembled program code.
    */
-  program_t::source_t CompileExpression(const char* fname, std::istream& input);
+  program_t::source_t CompileExpression(const char* fname, std::istream& input, bool interactive);
 
 } // namespace deci
 

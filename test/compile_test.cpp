@@ -8,7 +8,7 @@ int main_repl(int argc, char* argv[]) {
   while (true) {
     std::cout << ">> ";
 
-    deci::program_t::source_t source = deci::CompileExpression("std::cin", std::cin);
+    deci::program_t::source_t source = deci::CompileExpression("std::cin", std::cin, true);
     deci::program_t* prog = deci::program_t::Create(source.data(), source.size());
     deci::value_t* result = vm.Run(*prog);
     prog->Delete();
@@ -31,7 +31,7 @@ int run(const char* filename) {
   input.open(filename, std::ios::in);
 
   if (input.good()) {
-    deci::program_t::source_t source = deci::CompileExpression(filename, input);
+    deci::program_t::source_t source = deci::CompileExpression(filename, input,false);
     deci::program_t* prog = deci::program_t::Create(source.data(), source.size());
     deci::value_t* result = vm.Run(*prog);
     prog->Delete();

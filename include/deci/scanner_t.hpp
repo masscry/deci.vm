@@ -16,10 +16,13 @@
 class deci_scanner_t: public deci_FlexLexer {
   std::string fname;
   deci::location cloc;
+  bool interactive;
 public:
   deci::parser_t::symbol_type get_next_token();
 
-  deci_scanner_t(std::istream& input, const std::string& fname):deci_FlexLexer(&input),fname(fname),cloc() {
+  deci_scanner_t(std::istream& input, const std::string& fname, bool interactive)
+    :deci_FlexLexer(&input),fname(fname),cloc(),interactive(interactive) 
+  {
     this->cloc.initialize(&this->fname, 1, 1);
   }
 

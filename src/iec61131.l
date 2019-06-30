@@ -142,8 +142,15 @@ NOT               {
 
 
 [\n]              {
-                    this->cloc.lines();
-                    this->cloc.step();
+                    if (this->interactive)
+                    {
+                      return deci::parser_t::make_END(DEFAULT_LOCATION_ARGUMENT);
+                    }
+                    else
+                    {
+                      this->cloc.lines();
+                      this->cloc.step();
+                    }
                   }
 
 <<EOF>>           {
