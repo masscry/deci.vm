@@ -1,6 +1,7 @@
 %skeleton "lalr1.cc"
 %require "3.0"
 %defines
+%locations
 %define parser_class_name { parser_t }
 
 %define api.token.constructor
@@ -63,6 +64,11 @@
 %token               LE         "<="
 %token               POW        "**"
 %token               ST_END     ";"
+%token               IF         "if"
+%token               THEN       "then"
+%token               ELSIF      "elsif"
+%token               ELSE       "else"
+%token               END_IF     "end_if"
 
 %type  <int>         argument_list "argument list"
 
@@ -82,6 +88,7 @@ statement_list:
 statement:
     ";"
   | expression_statement ";"
+  | if_statement
 ;
 
 expression_statement:
@@ -167,8 +174,23 @@ primary_expr:
   | "(" expression ")"
 ;
 
+if_statement:
+    "if" or_expr "then" then_tag  { std::cout << "if_statement" << std::endl; }
+;
+
+then_tag:
+    statement_list "elsif" elif_tag "else" statement_list "end_if"   { std::cout << "then_statement" << std::endl; }
+  | statement_list "elsif" elif_tag "end_if"                         { std::cout << "then_statement_2" << std::endl; }
+  | statement_list "end_if"                                          { std::cout << "then_statement_3" << std::endl; }
+;
+
+elif_tag:
+    or_expr "then" statement_list                                    { std::cout << "elif_statement" << std::endl; }
+  | elif_tag "elsif" or_expr "then" statement_list                   { std::cout << "elif_statement_2" << std::endl; }
+;
+
 %%
 
-void deci::parser_t::error(const std::string & msg) {
-  std::cerr << msg << std::endl;
+void deci::parser_t::error(const location_type& loc, const std::string & msg) {
+  std::cerr << loc << ": " << msg << std::endl;
 }

@@ -5,10 +5,10 @@
 
 namespace deci
 {
-  program_t::source_t CompileExpression(std::istream& input) {
+  program_t::source_t CompileExpression(const char* fname, std::istream& input) {
     std::stringstream tempstr;
 
-    deci_scanner_t scanner(input);
+    deci_scanner_t scanner(input, fname);
     deci::parser_t parser(scanner, tempstr);
 
     parser.parse();

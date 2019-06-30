@@ -14,11 +14,13 @@
 #include <iec61131.y.hpp>
 
 class deci_scanner_t: public deci_FlexLexer {
+  std::string fname;
+  deci::location cloc;
 public:
   deci::parser_t::symbol_type get_next_token();
 
-  deci_scanner_t(std::istream& input):deci_FlexLexer(&input) {
-    ;
+  deci_scanner_t(std::istream& input, const std::string& fname):deci_FlexLexer(&input),fname(fname),cloc() {
+    this->cloc.initialize(&this->fname, 1, 1);
   }
 
 };

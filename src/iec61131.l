@@ -5,8 +5,13 @@
 
 	#define yyterminate() return deci::parser_t::make_END();
 
+  #define YY_USER_ACTION this->cloc.step(); this->cloc.columns(yyleng); 
+
+  #define DEFAULT_LOCATION_ARGUMENT this->cloc
+
 %}
 
+%option yylineno
 %option caseless
 %option nodefault
 %option noyywrap
@@ -19,109 +24,130 @@ D             [0-9]
 
 %%
 
+IF                {
+                    return deci::parser_t::make_IF(DEFAULT_LOCATION_ARGUMENT);
+                  }
+
+THEN              {
+                    return deci::parser_t::make_THEN(DEFAULT_LOCATION_ARGUMENT);
+                  }
+
+ELSIF             {
+                    return deci::parser_t::make_ELSIF(DEFAULT_LOCATION_ARGUMENT);
+                  }
+
+ELSE              {
+                    return deci::parser_t::make_ELSE(DEFAULT_LOCATION_ARGUMENT);
+                  }
+
+END_IF            {
+                    return deci::parser_t::make_END_IF(DEFAULT_LOCATION_ARGUMENT);
+                  }
+
 XOR               {
-                    return deci::parser_t::make_XOR();
+                    return deci::parser_t::make_XOR(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 OR                {
-                    return deci::parser_t::make_OR();
+                    return deci::parser_t::make_OR(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 MOD               {
-                    return deci::parser_t::make_MOD();
+                    return deci::parser_t::make_MOD(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 NOT               {
-                    return deci::parser_t::make_NOT();
+                    return deci::parser_t::make_NOT(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 (AND|[&])         {
-                    return deci::parser_t::make_AND();
+                    return deci::parser_t::make_AND(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [=]               {
-                    return deci::parser_t::make_EQU();
+                    return deci::parser_t::make_EQU(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \<\>              {
-                    return deci::parser_t::make_NEQU();
+                    return deci::parser_t::make_NEQU(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \>                {
-                    return deci::parser_t::make_GR();
+                    return deci::parser_t::make_GR(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \<                {
-                    return deci::parser_t::make_LS();
+                    return deci::parser_t::make_LS(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \>\=              {
-                    return deci::parser_t::make_GE();
+                    return deci::parser_t::make_GE(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \<\=              {
-                    return deci::parser_t::make_LE();
+                    return deci::parser_t::make_LE(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \*\*              {
-                    return deci::parser_t::make_POW();
+                    return deci::parser_t::make_POW(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \;                {
-                    return deci::parser_t::make_ST_END();
+                    return deci::parser_t::make_ST_END(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 ({L}|_({L}|{D}))(_?({L}|{D}))* {
-                    return deci::parser_t::make_IDENTIFIER(deci::ToUpper(deci::ToLower(yytext)));
+                    return deci::parser_t::make_IDENTIFIER(deci::ToUpper(deci::ToLower(yytext)), DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [0-9]+\.[0-9]*    {
-                    return deci::parser_t::make_NUMBER(atof(yytext));
+                    return deci::parser_t::make_NUMBER(atof(yytext), DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [0-9]+            {
-                    return deci::parser_t::make_NUMBER(atof(yytext));
+                    return deci::parser_t::make_NUMBER(atof(yytext), DEFAULT_LOCATION_ARGUMENT);
                   }
 
 :=                {
-                    return deci::parser_t::make_ASSIGN();
+                    return deci::parser_t::make_ASSIGN(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \+                {
-                    return deci::parser_t::make_SUM();
+                    return deci::parser_t::make_SUM(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \-                {
-                    return deci::parser_t::make_SUB();
+                    return deci::parser_t::make_SUB(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \*                {
-                    return deci::parser_t::make_MUL();
+                    return deci::parser_t::make_MUL(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 ,                 {
-                    return deci::parser_t::make_COMMA();
+                    return deci::parser_t::make_COMMA(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 \/                {
-                    return deci::parser_t::make_DIV();
+                    return deci::parser_t::make_DIV(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [)]               {
-                    return deci::parser_t::make_BCLOSE();
+                    return deci::parser_t::make_BCLOSE(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [(]               {
-                    return deci::parser_t::make_BOPEN();
+                    return deci::parser_t::make_BOPEN(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 
 [\n]              {
-                    return deci::parser_t::make_END();
+                    this->cloc.lines();
+                    this->cloc.step();
                   }
 
 <<EOF>>           {
-                    return deci::parser_t::make_END();
+                    return deci::parser_t::make_END(DEFAULT_LOCATION_ARGUMENT);
                   }
 
 [ \t\v]           {
@@ -129,7 +155,7 @@ NOT               {
                   }
 
 .                 {
-                    throw deci::parser_t::syntax_error("Unknown symbol");
+                    throw deci::parser_t::syntax_error(DEFAULT_LOCATION_ARGUMENT, "Unknown symbol");
                   }
 
 %%
