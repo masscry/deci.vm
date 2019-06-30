@@ -35,7 +35,7 @@ namespace deci {
 
     string_t();
 
-      explicit string_t(const std::string& copy);
+    explicit string_t(const std::string& copy);
     explicit string_t(const string_t& copy);
 
     ~string_t();
