@@ -71,17 +71,58 @@ namespace deci {
     }\
   }
 
+  #define DEFINE_XCLASS_INT(NAME, ACTION)\
+  class NAME ## _xclass_t {\
+  public:\
+    static double Execute(double a, double b) {\
+      return ((int32_t)a) ACTION ((int32_t)b);\
+    }\
+    static constexpr const char* ID() {\
+      return "deci::" # NAME;\
+    }\
+  }
+
   DEFINE_XCLASS(sum, +);
   DEFINE_XCLASS(sub, -);
   DEFINE_XCLASS(mul, *);
   DEFINE_XCLASS(div, /);
+  DEFINE_XCLASS(ls,  <);
+  DEFINE_XCLASS(gr,  >);
+  DEFINE_XCLASS(le,  <=);
+  DEFINE_XCLASS(ge,  >=);
+  DEFINE_XCLASS(eq,  ==);
+  DEFINE_XCLASS(neq, !=);
+  DEFINE_XCLASS_INT(or,  ||);
+  DEFINE_XCLASS_INT(and, &&);
+  DEFINE_XCLASS_INT(xor, ^);
 
-  #undef XCLASS_DEFINE
+  #undef DEFINE_XCLASS
+  #undef DEFINE_XCLASS_INT
+
+  class pow_xclass_t {
+  public:
+    static double Execute(double a, double b) {
+      return pow(a, b);
+    }
+    static constexpr const char* ID() {
+      return "deci::pow";
+    }
+  };
 
   typedef binop_t<sum_xclass_t> sum_t;
   typedef binop_t<sub_xclass_t> sub_t;
   typedef binop_t<mul_xclass_t> mul_t;
   typedef binop_t<div_xclass_t> div_t;
+  typedef binop_t< ls_xclass_t>  ls_t;
+  typedef binop_t< gr_xclass_t>  gr_t;
+  typedef binop_t< le_xclass_t>  le_t;
+  typedef binop_t< ge_xclass_t>  ge_t;
+  typedef binop_t< eq_xclass_t>  eq_t;
+  typedef binop_t<neq_xclass_t> neq_t;
+  typedef binop_t< or_xclass_t>  or_t;
+  typedef binop_t<and_xclass_t> and_t;
+  typedef binop_t<xor_xclass_t> xor_t;
+  typedef binop_t<pow_xclass_t> pow_t;
 
 }
 

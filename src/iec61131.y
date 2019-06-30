@@ -50,6 +50,16 @@
 %token               DIV        "/"
 %token               ASSIGN     ":="
 %token               COMMA      ","
+%token               XOR        "xor"
+%token               OR         "or"
+%token               AND        "and"
+%token               EQU        "="
+%token               NEQU       "<>"
+%token               GR         ">"
+%token               LS         "<"
+%token               GE         ">="
+%token               LE         "<="
+%token               POW        "**"
 
 %type  <int>         argument_list "argument list"
 
@@ -71,8 +81,37 @@ expression:
 ;
 
 assign_expr:
-    add_expr                 { output << "ret" << std::endl;        }
-  | IDENTIFIER ":=" add_expr { output << "set " << $1 << std::endl; }
+    or_expr                 { output << "ret" << std::endl;        }
+  | IDENTIFIER ":=" or_expr { output << "set " << $1 << std::endl; }
+;
+
+or_expr:
+    xor_expr
+  | or_expr "or" xor_expr     { output << "bin or" << std::endl;  }
+;
+
+xor_expr:
+    and_expr
+  | xor_expr "xor" and_expr   { output << "bin xor" << std::endl; }
+;
+
+and_expr:
+    eql_expr
+  | and_expr "and" eql_expr   { output << "bin and" << std::endl; }
+;
+
+eql_expr:
+    cmp_expr
+  | eql_expr "=" cmp_expr     { output << "bin eq"  << std::endl; }
+  | eql_expr "<>" cmp_expr    { output << "bin neq" << std::endl; }
+;
+
+cmp_expr:
+    add_expr
+  | cmp_expr "<" add_expr     { output << "bin ls" << std::endl; }
+  | cmp_expr ">" add_expr     { output << "bin gr" << std::endl; }
+  | cmp_expr "<=" add_expr    { output << "bin le" << std::endl; }
+  | cmp_expr ">=" add_expr    { output << "bin ge" << std::endl; }
 ;
 
 add_expr:
@@ -82,9 +121,14 @@ add_expr:
 ;
 
 mul_expr:
+    pow_expr
+  | mul_expr "*" pow_expr     { output << "bin mul" << std::endl; }
+  | mul_expr "/" pow_expr     { output << "bin div" << std::endl; }
+;
+
+pow_expr:
     postfix_expr
-  | mul_expr "*" postfix_expr { output << "bin mul" << std::endl; }
-  | mul_expr "/" postfix_expr { output << "bin div" << std::endl; }
+  | pow_expr "**" postfix_expr { output << "bin pow" << std::endl; }
 ;
 
 postfix_expr:

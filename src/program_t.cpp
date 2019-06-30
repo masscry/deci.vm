@@ -29,6 +29,16 @@ namespace {
     CHECK_OPCODE("sub", deci::sub_t::Instance().Copy());
     CHECK_OPCODE("mul", deci::mul_t::Instance().Copy());
     CHECK_OPCODE("div", deci::div_t::Instance().Copy());
+    CHECK_OPCODE( "ls", deci:: ls_t::Instance().Copy());
+    CHECK_OPCODE( "gr", deci:: gr_t::Instance().Copy());
+    CHECK_OPCODE( "le", deci:: le_t::Instance().Copy());
+    CHECK_OPCODE( "ge", deci:: ge_t::Instance().Copy());
+    CHECK_OPCODE( "eq", deci:: eq_t::Instance().Copy());
+    CHECK_OPCODE("neq", deci::neq_t::Instance().Copy());
+    CHECK_OPCODE( "or", deci:: or_t::Instance().Copy());
+    CHECK_OPCODE("and", deci::and_t::Instance().Copy());
+    CHECK_OPCODE("xor", deci::xor_t::Instance().Copy());
+    CHECK_OPCODE("pow", deci::pow_t::Instance().Copy());
     return deci::string_t(token).Copy();
   }
 

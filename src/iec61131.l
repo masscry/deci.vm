@@ -19,6 +19,46 @@ D             [0-9]
 
 %%
 
+XOR               {
+                    return deci::parser_t::make_XOR();
+                  }
+
+OR                {
+                    return deci::parser_t::make_OR();
+                  }
+
+(AND|[&])         {
+                    return deci::parser_t::make_AND();
+                  }
+
+[=]               {
+                    return deci::parser_t::make_EQU();
+                  }
+
+\<\>              {
+                    return deci::parser_t::make_NEQU();
+                  }
+
+\>                {
+                    return deci::parser_t::make_GR();
+                  }
+
+\<                {
+                    return deci::parser_t::make_LS();
+                  }
+
+\>\=              {
+                    return deci::parser_t::make_GE();
+                  }
+
+\<\=              {
+                    return deci::parser_t::make_LE();
+                  }
+
+\*\*              {
+                    return deci::parser_t::make_POW();
+                  }
+
 ({L}|_({L}|{D}))(_?({L}|{D}))* {
                     return deci::parser_t::make_IDENTIFIER(deci::ToUpper(deci::ToLower(yytext)));
                   }
