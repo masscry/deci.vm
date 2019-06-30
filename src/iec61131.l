@@ -27,6 +27,14 @@ OR                {
                     return deci::parser_t::make_OR();
                   }
 
+MOD               {
+                    return deci::parser_t::make_MOD();
+                  }
+
+NOT               {
+                    return deci::parser_t::make_NOT();
+                  }
+
 (AND|[&])         {
                     return deci::parser_t::make_AND();
                   }
@@ -57,6 +65,10 @@ OR                {
 
 \*\*              {
                     return deci::parser_t::make_POW();
+                  }
+
+\;                {
+                    return deci::parser_t::make_ST_END();
                   }
 
 ({L}|_({L}|{D}))(_?({L}|{D}))* {

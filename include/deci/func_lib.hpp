@@ -95,6 +95,7 @@ namespace deci {
   DEFINE_XCLASS_INT(or,  ||);
   DEFINE_XCLASS_INT(and, &&);
   DEFINE_XCLASS_INT(xor, ^);
+  DEFINE_XCLASS_INT(mod, %);
 
   #undef DEFINE_XCLASS
   #undef DEFINE_XCLASS_INT
@@ -123,6 +124,84 @@ namespace deci {
   typedef binop_t<and_xclass_t> and_t;
   typedef binop_t<xor_xclass_t> xor_t;
   typedef binop_t<pow_xclass_t> pow_t;
+  typedef binop_t<mod_xclass_t> mod_t;
+
+  template<typename xclass>
+  class unrop_t: public function_t {
+
+    unrop_t(const unrop_t&) = delete;
+    unrop_t& operator =(const unrop_t&) = delete;
+
+    unrop_t(){
+      ;
+    }
+    
+    ~unrop_t() {
+      ;
+    }
+
+    size_t DoHashing() const override {
+      return std::hash<const void*>()(this);
+    }
+
+  public:
+    
+    /**
+     * @brief Take top two arguments from global stack, evaluate and put result in result variable.
+     */
+    void Evaluate(vm_t&, const stack_t& stack, stack_t& local) override {
+      number_t& a = dynamic_cast<number_t&>(stack.Top(0));
+      local.Result(number_t(xclass::Execute(a.Value())));
+    }
+
+    /**
+     * @brief Each function has it's own ID
+     */
+    std::string ToText() const override {
+      return xclass::ID();
+    }
+
+    /**
+     * @brief Single static instance of binary operation object.
+     * 
+     * We do not need more than one such object in program.
+     */
+    static unrop_t& Instance() {
+      static unrop_t self;
+      return self;
+    }
+  };
+
+  #define DEFINE_UNR_XCLASS(NAME, ACTION)\
+  class NAME ## _xclass_t {\
+  public:\
+    static double Execute(double a) {\
+      return ACTION a;\
+    }\
+    static constexpr const char* ID() {\
+      return "deci::" # NAME;\
+    }\
+  }
+
+  #define DEFINE_UNR_XCLASS_INT(NAME, ACTION)\
+  class NAME ## _xclass_t {\
+  public:\
+    static double Execute(double a, double b) {\
+      return ACTION ((int32_t)a);\
+    }\
+    static constexpr const char* ID() {\
+      return "deci::" # NAME;\
+    }\
+  }
+
+  DEFINE_UNR_XCLASS(not, !);
+  DEFINE_UNR_XCLASS(neg, -);
+
+  typedef unrop_t<not_xclass_t> not_t;
+  typedef unrop_t<neg_xclass_t> neg_t;
+
+  #undef DEFINE_UNR_CLASS
+  #undef DEFINE_UNR_CLASS_INT
 
 }
 

@@ -16,7 +16,8 @@ namespace {
     CHECK_OPCODE("bin"    ,  deci::OP_BIN    );
     CHECK_OPCODE("rval"   ,  deci::OP_RVAL   );
     CHECK_OPCODE("set"    ,  deci::OP_SET    );
-
+    CHECK_OPCODE("unr"    ,  deci::OP_UNR    );
+    
     return deci::OP_UNDEFINED;
   }
 
@@ -39,6 +40,9 @@ namespace {
     CHECK_OPCODE("and", deci::and_t::Instance().Copy());
     CHECK_OPCODE("xor", deci::xor_t::Instance().Copy());
     CHECK_OPCODE("pow", deci::pow_t::Instance().Copy());
+    CHECK_OPCODE("mod", deci::mod_t::Instance().Copy());
+    CHECK_OPCODE("not", deci::not_t::Instance().Copy());
+    CHECK_OPCODE("neg", deci::neg_t::Instance().Copy());
     return deci::string_t(token).Copy();
   }
 
@@ -130,6 +134,14 @@ namespace deci
       {
         local.Variable(*command.arg, local.Top(0));
         local.Drop(1);
+        break;
+      }
+      case OP_UNR:
+      {
+        this->result->Delete();
+        this->result = EvaluateCALL(command, vm, local);
+        local.Drop(1);
+        local.Push(*this->result);
         break;
       }
       default:

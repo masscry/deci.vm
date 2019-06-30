@@ -48,6 +48,8 @@
 %token               SUB        "-"
 %token               MUL        "*"
 %token               DIV        "/"
+%token               MOD        "mod"
+%token               NOT        "not"
 %token               ASSIGN     ":="
 %token               COMMA      ","
 %token               XOR        "xor"
@@ -60,6 +62,7 @@
 %token               GE         ">="
 %token               LE         "<="
 %token               POW        "**"
+%token               ST_END     ";"
 
 %type  <int>         argument_list "argument list"
 
@@ -68,12 +71,21 @@
 %%
 
 entry:
-    expression_statement
+    statement_list
+;
+
+statement_list:
+    statement 
+  | statement_list statement
+;
+
+statement:
+    ";"
+  | expression_statement ";"
 ;
 
 expression_statement:
-    %empty
-  | expression                
+    expression
 ;
 
 expression:
@@ -122,13 +134,20 @@ add_expr:
 
 mul_expr:
     pow_expr
-  | mul_expr "*" pow_expr     { output << "bin mul" << std::endl; }
-  | mul_expr "/" pow_expr     { output << "bin div" << std::endl; }
+  | mul_expr "*"   pow_expr     { output << "bin mul" << std::endl; }
+  | mul_expr "mod" pow_expr     { output << "bin mod" << std::endl; }
+  | mul_expr "/"   pow_expr     { output << "bin div" << std::endl; }
 ;
 
 pow_expr:
+    unary_expr
+  | pow_expr "**" unary_expr { output << "bin pow" << std::endl; }
+;
+
+unary_expr:
     postfix_expr
-  | pow_expr "**" postfix_expr { output << "bin pow" << std::endl; }
+  | "not" unary_expr           { output << "unr not" << std::endl; }
+  | "-" unary_expr             { output << "unr neg" << std::endl; }
 ;
 
 postfix_expr:
@@ -138,8 +157,8 @@ postfix_expr:
 ;
 
 argument_list:
-    add_expr                          { $$ = 1;      }
-  | argument_list "," add_expr        { $$ = $1 + 1; }
+    or_expr                          { $$ = 1;      }
+  | argument_list "," or_expr        { $$ = $1 + 1; }
 ;
 
 primary_expr:
