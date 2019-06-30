@@ -157,7 +157,7 @@ NOT               {
                     return deci::parser_t::make_END(DEFAULT_LOCATION_ARGUMENT);
                   }
 
-[ \t\v]           {
+[ \r\t\v]         {
                     // IGNORE SPACES;
                   }
 
