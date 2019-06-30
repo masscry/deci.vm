@@ -14,10 +14,13 @@
 %option yyclass="deci_scanner_t"
 %option prefix="deci_"
 
+L            [A-Z]
+D             [0-9]
+
 %%
 
-[A-Z_][A-Z0-9_]*  {
-                    return deci::parser_t::make_IDENTIFIER(yytext);
+({L}|_({L}|{D}))(_?({L}|{D}))* {
+                    return deci::parser_t::make_IDENTIFIER(deci::ToUpper(deci::ToLower(yytext)));
                   }
 
 [0-9]+\.[0-9]*    {

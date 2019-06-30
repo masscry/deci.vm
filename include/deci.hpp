@@ -48,6 +48,24 @@ namespace deci {
     return item.size();
   }
 
+  inline std::string ToUpper(const std::string& src) {
+    std::string result;
+    result.reserve(src.size());
+    for (auto ch: src) {
+      result.push_back(toupper(ch));
+    }
+    return result;
+  }
+
+  inline std::string ToLower(const std::string& src) {
+    std::string result;
+    result.reserve(src.size());
+    for (auto ch: src) {
+      result.push_back(tolower(ch));
+    }
+    return result;
+  }
+
 }
 
 #endif /* __DECI_HEADER__ */

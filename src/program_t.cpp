@@ -2,7 +2,7 @@
 
 namespace {
 
-#define CHECK_OPCODE(SIG, OPCODE) if (strcmp(token, (SIG)) == 0) return (OPCODE)
+#define CHECK_OPCODE(SIG, OPCODE) if (strcasecmp(token, (SIG)) == 0) return (OPCODE)
 
   deci::opcode_t SelectOpcode(const char* token) {
 
