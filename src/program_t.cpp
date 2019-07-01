@@ -207,7 +207,7 @@ namespace deci
     }
   }
 
-  program_t::source_t AssembleProgram(std::istream& input, bool verbose) {
+  program_t::source_t AssembleProgram(std::istream& input) {
     program_t::source_t result;
     std::unordered_map<std::string, int> labels;
 
@@ -215,11 +215,6 @@ namespace deci
       std::string opcodeToken;
 
       input >> opcodeToken;
-
-      if (verbose)
-      {
-        std::cout << opcodeToken << " ";
-      }
 
       if (opcodeToken.size() == 0) {
         break;
@@ -232,22 +227,12 @@ namespace deci
       case OP_RESULT:
       case OP_RETURN:
         result.push_back({ opcode, nothing_t::Instance().Copy() });
-
-        if (verbose) 
-        {
-          std::cout << std::endl;
-        }
         break;
       case OP_LABEL:
         {
           std::string labelToken;
           input >> labelToken;
           labels[labelToken] = result.size();
-
-          if (verbose)
-          {
-            std::cout << labelToken << std::endl;
-          }
           break;
         }
       default:
@@ -255,11 +240,6 @@ namespace deci
           std::string argToken;
           input >> argToken;
           result.push_back({ opcode, SelectValue(argToken.c_str()) });
-
-          if (verbose)
-          {
-            std::cout << argToken << std::endl;
-          }
           break;
         }
       }

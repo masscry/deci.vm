@@ -17,6 +17,6 @@ namespace deci
 
     int totalLength = ast.Generate(tempstr, 0);
 
-    return AssembleProgram(tempstr, true);
+    return AssembleProgram(tempstr);
   }
 } // namespace deci
