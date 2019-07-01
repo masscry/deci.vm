@@ -127,6 +127,7 @@ namespace deci {
 
   stack_t::~stack_t() {
     this->result->Delete();
+    this->Drop(this->Depth());
   }
 
 }
