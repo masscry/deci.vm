@@ -6,10 +6,11 @@ namespace deci {
     ;
   }
 
-  void ast_t::Generate(std::ostream& output) const {
+  int ast_t::Generate(std::ostream& output, int pc) const {
     for (auto item: this->statements) {
-      item->Generate(output);
+      pc = item->Generate(output, pc);
     }
+    return pc;
   }
 
   void ast_t::Append(ast_item_t* item) {
@@ -26,8 +27,9 @@ namespace deci {
     }
   }
 
-  void ast_number_t::Generate(std::ostream& output) const {
+  int ast_number_t::Generate(std::ostream& output, int pc) const {
     output << "push " << this->value << std::endl;
+    return pc + 1;
   }
 
   ast_number_t::ast_number_t(double value):value(value) {
@@ -38,8 +40,9 @@ namespace deci {
 
   }
 
-  void ast_identifier_t::Generate(std::ostream& output) const {
+  int ast_identifier_t::Generate(std::ostream& output, int pc) const {
     output << "rval " << this->value << std::endl; 
+    return pc + 1;
   }
 
   ast_identifier_t::ast_identifier_t(const std::string& value):value(value) {
@@ -58,10 +61,11 @@ namespace deci {
     this->args.push_back(item);
   }
 
-  void ast_arg_list_t::Generate(std::ostream& output) const {
+  int ast_arg_list_t::Generate(std::ostream& output, int pc) const {
     for (auto item: args) {
-      item->Generate(output);
+      pc = item->Generate(output, pc);
     }
+    return pc;
   }
 
   ast_arg_list_t::ast_arg_list_t():args() {
@@ -74,14 +78,16 @@ namespace deci {
     }
   }
 
-  void ast_postfix_t::Generate(std::ostream& output) const {
+  int ast_postfix_t::Generate(std::ostream& output, int pc) const {
     if (arglist == nullptr) {
-      output << "call " << this->identifier << "\nresl" << std::endl; 
+      output << "call " << this->identifier << "\nresl" << std::endl;
+      return pc + 2;
     }
     else
     {
-      arglist->Generate(output);
+      pc = arglist->Generate(output, pc);
       output << "call " << this->identifier << "\ndrop " << arglist->Total() << "\nresl" << std::endl;
+      return pc + 3;
     }
   }
 
@@ -94,10 +100,11 @@ namespace deci {
     delete this->arglist;
   }
 
-  void ast_binary_t::Generate(std::ostream& output) const {
-    this->a->Generate(output);
-    this->b->Generate(output);
+  int ast_binary_t::Generate(std::ostream& output, int pc) const {
+    pc = this->a->Generate(output, pc);
+    pc = this->b->Generate(output, pc);
     output << "bin " << this->identifier << std::endl;
+    return pc + 1;
   }
 
   ast_binary_t::ast_binary_t(const std::string& identifier, ast_item_t* a, ast_item_t* b)
@@ -110,9 +117,10 @@ namespace deci {
     delete this->b;
   }
 
-  void ast_unary_t::Generate(std::ostream& output) const {
-    this->chain->Generate(output);
+  int ast_unary_t::Generate(std::ostream& output, int pc) const {
+    pc = this->chain->Generate(output, pc);
     output << "unr " << this->identifier << std::endl;
+    return pc + 1;
   }
 
   ast_unary_t::ast_unary_t(const std::string& identifier, ast_item_t* chain)
@@ -124,9 +132,10 @@ namespace deci {
     delete this->chain;
   }
 
-  void ast_return_t::Generate(std::ostream& output) const {
-    this->chain->Generate(output);
+  int ast_return_t::Generate(std::ostream& output, int pc) const {
+    pc = this->chain->Generate(output, pc);
     output << "ret" << std::endl;
+    return pc + 1;
   }
 
   ast_return_t::ast_return_t(ast_item_t* chain):chain(chain) {
@@ -137,9 +146,10 @@ namespace deci {
     delete this->chain;
   }
 
-  void ast_set_t::Generate(std::ostream& output) const {
-    this->chain->Generate(output);
+  int ast_set_t::Generate(std::ostream& output, int pc) const {
+    pc = this->chain->Generate(output, pc);
     output << "set " << this->identifier << std::endl;
+    return pc + 1;
   }
 
   ast_set_t::ast_set_t(const std::string& identifier, ast_item_t* chain):identifier(identifier), chain(chain) {
@@ -150,26 +160,31 @@ namespace deci {
     delete this->chain;
   }
 
-  void ast_if_t::Generate(std::ostream& output) const {
-    this->condition->Generate(output);
-    output << "jz __label_" << this->true_loc << "__" << std::endl;
-    this->true_path->Generate(output);
+  int ast_if_t::Generate(std::ostream& output, int pc) const {
+    pc = this->condition->Generate(output, pc);
+
+    int true_loc = pc;
+
+    output << "jz __label_" << true_loc << "__" << std::endl;
+    pc = this->true_path->Generate(output, pc + 1);
 
     if (this->else_path != nullptr)
     {
-      output << "jmp __label_" << this->else_loc << "__" << std::endl;
-      output << "label __label_" << this->true_loc << "__" << std::endl;
-      this->else_path->Generate(output);
-      output << "label __label_" << this->else_loc << "__" << std::endl;
+      int else_loc = pc;
+      output << "jmp __label_" << else_loc << "__" << std::endl;
+      output << ": __label_" << true_loc << "__" << std::endl;
+      pc = this->else_path->Generate(output, pc + 1);
+      output << ": __label_" << else_loc << "__" << std::endl;
     }
     else
     {
-      output << "label __label_" << this->true_loc << "__" << std::endl;
+      output << ": __label_" << true_loc << "__" << std::endl;
     }
+    return pc;
   }
 
-  ast_if_t::ast_if_t(ast_item_t* condition, ast_t* true_path, ast_t* else_path, int true_loc, int else_loc)
-    : condition(condition), true_path(true_path), else_path(else_path), true_loc(true_loc), else_loc(else_loc) {
+  ast_if_t::ast_if_t(ast_item_t* condition, ast_t* true_path, ast_t* else_path)
+    : condition(condition), true_path(true_path), else_path(else_path) {
       ;
   }
 

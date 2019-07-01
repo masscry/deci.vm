@@ -10,7 +10,7 @@ namespace deci
 
   class ast_item_t {
   public:
-    virtual void Generate(std::ostream& output) const = 0;
+    virtual int Generate(std::ostream& output, int pc) const = 0;
     virtual ~ast_item_t() = 0;
   };
 
@@ -18,7 +18,7 @@ namespace deci
     double value;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_number_t(double value);
     ~ast_number_t();
@@ -29,7 +29,7 @@ namespace deci
     std::string value;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_identifier_t(const std::string& value);
     ~ast_identifier_t();
@@ -44,7 +44,7 @@ namespace deci
 
     void Append(ast_item_t* item);
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_arg_list_t();
     ~ast_arg_list_t();
@@ -56,7 +56,7 @@ namespace deci
 
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_postfix_t(const std::string& identifier, ast_arg_list_t* arglist);
     ~ast_postfix_t();
@@ -68,7 +68,7 @@ namespace deci
     ast_item_t* b;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_binary_t(const std::string& identifier, ast_item_t* a, ast_item_t* b);
     ~ast_binary_t();
@@ -79,7 +79,7 @@ namespace deci
     ast_item_t* chain;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_unary_t(const std::string& identifier, ast_item_t* chain);
     ~ast_unary_t();
@@ -89,7 +89,7 @@ namespace deci
     ast_item_t* chain;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_return_t(ast_item_t* chain);
     ~ast_return_t();
@@ -100,7 +100,7 @@ namespace deci
     ast_item_t* chain;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_set_t(const std::string& identifier, ast_item_t* chain);
     ~ast_set_t();
@@ -112,7 +112,7 @@ namespace deci
 
     void Append(ast_item_t* item);
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
     ast_t();
     ~ast_t();
@@ -123,13 +123,11 @@ namespace deci
     ast_item_t* condition;
     ast_t*      true_path;
     ast_t*      else_path;
-    int         true_loc;
-    int         else_loc;
   public:
 
-    void Generate(std::ostream& output) const;
+    int Generate(std::ostream& output, int pc) const override;
 
-    ast_if_t(ast_item_t* condition, ast_t* true_path, ast_t* else_path, int true_loc, int else_loc);
+    ast_if_t(ast_item_t* condition, ast_t* true_path, ast_t* else_path);
     ~ast_if_t();
 
   };

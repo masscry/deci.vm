@@ -186,8 +186,8 @@ primary_expr:
 ;
 
 if_statement:
-    "if" or_expr "then" statement_list "else" statement_list "end_if" { $$ = new ast_if_t($2, $4, $6, @3.begin.line, @5.begin.line);  }
-  | "if" or_expr "then" statement_list "end_if"                       { $$ = new ast_if_t($2, $4, nullptr, @3.begin.line, -1);        }
+    "if" or_expr "then" statement_list "else" statement_list "end_if" { $$ = new ast_if_t($2, $4,      $6); }
+  | "if" or_expr "then" statement_list "end_if"                       { $$ = new ast_if_t($2, $4, nullptr); }
 ;
 
 %%

@@ -78,7 +78,7 @@ namespace deci
 
   };
 
-  program_t::source_t AssembleProgram(std::istream& input);
+  program_t::source_t AssembleProgram(std::istream& input, bool verbose);
 
 } // namespace deci
 

@@ -42,7 +42,16 @@ namespace deci
   }
 
   void dictionary_t::Put(const value_t& key, const value_t& value) {
-    this->storage.insert(std::make_pair(key.Copy(), value.Copy()));
+    storage_t::iterator item = this->storage.find(const_cast<value_t*>(&key));
+    if (item == this->storage.end())
+    {
+      this->storage.insert(std::make_pair(key.Copy(), value.Copy()));
+    }
+    else
+    {
+      item->second->Delete();
+      item->second = value.Copy(); 
+    }
   }
 
   void dictionary_t::Remove(const value_t& key) {
@@ -95,6 +104,7 @@ namespace deci
       }
       else
       {
+        it->second->Delete();
         it->second = el.second->Copy();
       }
     }

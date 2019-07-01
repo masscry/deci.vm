@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     throw std::runtime_error("Can't open file");
   }
 
-  deci::program_t::source_t source = deci::AssembleProgram(input);
+  deci::program_t::source_t source = deci::AssembleProgram(input, true);
   input.close();
 
   deci::value_t* tmp;
