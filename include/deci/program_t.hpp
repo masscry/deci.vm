@@ -28,6 +28,9 @@ namespace deci
     OP_RVAL           , /**< Get value from context and push on stack top */
     OP_SET            , /**< Take value from stack top and save to context */
     OP_UNR            , /**< OP_CALL func, DROP 1, RESL */
+    OP_JZ             , /**< Jump to point if zero on top */
+    OP_JMP            , /**< Jump to point */
+    OP_LABEL          , /**< Mark label    */
     OP_TOTAL            /**< Total opcodes */
   };
 

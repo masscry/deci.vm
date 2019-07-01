@@ -17,6 +17,9 @@ namespace {
     CHECK_OPCODE("rval"   ,  deci::OP_RVAL   );
     CHECK_OPCODE("set"    ,  deci::OP_SET    );
     CHECK_OPCODE("unr"    ,  deci::OP_UNR    );
+    CHECK_OPCODE("jz"     ,  deci::OP_JZ     );
+    CHECK_OPCODE("jmp"    ,  deci::OP_JMP    );
+    CHECK_OPCODE("label"  ,  deci::OP_LABEL  );
     
     return deci::OP_UNDEFINED;
   }
@@ -78,63 +81,71 @@ namespace deci
   }
 
   void program_t::Evaluate(vm_t& vm, const stack_t& stack, stack_t& local) {
-    for (auto command: this->source) {
+    size_t pc;
+    size_t total = this->source.size();
+
+#define NEXT_PC() ++pc; break
+#define JUMP_PC(NPC) pc = NPC; break
+
+    for (pc = 0; pc < total;) {
+      auto command = this->source[pc];
+
       switch (command.opcode) {
       case OP_NOP:
-        break;
+        NEXT_PC();
       case OP_ARG:
       {
         number_t& num = *static_cast<number_t*>(command.arg);
         local.Push(stack.Top(static_cast<size_t>(num.Value())));
-        break;
+        NEXT_PC();
       }
       case OP_PUSH:
         local.Push(*command.arg);
-        break;
+        NEXT_PC();
       case OP_DROP:
       {
         number_t& num = *static_cast<number_t*>(command.arg);
         local.Drop(static_cast<int>(num.Value()));
-        break;
+        NEXT_PC();
       }
       case OP_CALL:
         this->result->Delete();
         this->result = EvaluateCALL(command, vm, local);
-        break;
+        NEXT_PC();
       case OP_RESULT:
         local.Push(*this->result);
-        break;
+        NEXT_PC();
       case OP_RETURN:
         local.Result(local.Top(0));
-        break;
+        NEXT_PC();
       case OP_BIN:
       {
         this->result->Delete();
         this->result = EvaluateCALL(command, vm, local);
         local.Drop(2);
         local.Push(*this->result);
-        break;
+        NEXT_PC();
       }
       case OP_RVAL:
       {
         const value_t& loc_value = local.Variable(*command.arg);       
         if (&loc_value != &nothing_t::Instance()) {
           local.Push(loc_value);
-          break;
+          NEXT_PC();
         }
         const value_t& glob_value = stack.Variable(*command.arg);
         if (&glob_value != &nothing_t::Instance()) {
           local.Push(glob_value);
-          break;
+          NEXT_PC();
         }
         local.Push(nothing_t::Instance());
-        break;
+        NEXT_PC();
       }
       case OP_SET:
       {
         local.Variable(*command.arg, local.Top(0));
         local.Drop(1);
-        break;
+        NEXT_PC();
       }
       case OP_UNR:
       {
@@ -142,7 +153,20 @@ namespace deci
         this->result = EvaluateCALL(command, vm, local);
         local.Drop(1);
         local.Push(*this->result);
-        break;
+        NEXT_PC();
+      }
+      case OP_JZ:
+      {
+        double topVal = dynamic_cast<number_t&>(local.Top(0)).Value();
+        local.Drop(1);
+        if (topVal == 0.0) {
+          JUMP_PC(dynamic_cast<number_t&>(*command.arg).Value());
+        }
+        NEXT_PC();
+      }
+      case OP_JMP:
+      {
+        JUMP_PC(dynamic_cast<number_t&>(*command.arg).Value());
       }
       default:
         throw std::runtime_error("Unknown Operation Code");
@@ -185,6 +209,7 @@ namespace deci
 
   program_t::source_t AssembleProgram(std::istream& input) {
     program_t::source_t result;
+    std::unordered_map<std::string, int> labels;
 
     while(!input.eof()) {
       std::string opcodeToken;
@@ -203,12 +228,31 @@ namespace deci
       case OP_RETURN:
         result.push_back({ opcode, nothing_t::Instance().Copy() });
         break;
+      case OP_LABEL:
+        {
+          std::string labelToken;
+          input >> labelToken;
+          labels[labelToken] = result.size();
+          break;
+        }
       default:
         {
           std::string argToken;
           input >> argToken;
           result.push_back({ opcode, SelectValue(argToken.c_str()) });
           break;
+        }
+      }
+    }
+
+    // Fix label pointers
+    for (auto& item: result) {
+      if (item.arg->Type() == value_t::STRING) {
+        string_t& str = static_cast<string_t&>(*item.arg);
+        auto it = labels.find(str.Value());
+        if (it != labels.end()) {
+          item.arg->Delete();
+          item.arg = number_t(it->second).Copy();
         }
       }
     }

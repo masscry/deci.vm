@@ -76,6 +76,7 @@
 %type <ast_item_t*> statement expression_statement expression
 %type <ast_item_t*> assign_expr or_expr xor_expr and_expr eql_expr cmp_expr
 %type <ast_item_t*> add_expr mul_expr pow_expr unary_expr postfix_expr primary_expr
+%type <ast_item_t*> if_statement
 
 %type <std::string> CMP_OPERATOR
 
@@ -88,13 +89,14 @@ entry:
 ;
 
 statement_list:
-    statement                { $$ = new ast_t(); $$->Append($1); }
-  | statement_list statement { $$ = $1; $$->Append($2);          }
+    statement                { $$ = new ast_t(); if ($1 != nullptr) { $$->Append($1); } }
+  | statement_list statement { $$ = $1; $$->Append($2); }
 ;
 
 statement:
     ";"                      { $$ = nullptr; }
   | expression_statement ";" { $$ = $1;      }
+  | if_statement ";"         { $$ = $1;      }
 ;
 
 expression_statement:
@@ -181,6 +183,11 @@ primary_expr:
     NUMBER                    { $$ = new ast_number_t($1); }
   | IDENTIFIER                { $$ = new ast_identifier_t($1); }
   | "(" expression ")"        { $$ = $2; }
+;
+
+if_statement:
+    "if" or_expr "then" statement_list "else" statement_list "end_if" { $$ = new ast_if_t($2, $4, $6, @3.begin.line, @5.begin.line);  }
+  | "if" or_expr "then" statement_list "end_if"                       { $$ = new ast_if_t($2, $4, nullptr, @3.begin.line, -1);        }
 ;
 
 %%

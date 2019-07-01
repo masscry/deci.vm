@@ -119,6 +119,20 @@ namespace deci
 
   };
 
+  class ast_if_t final: public ast_item_t {
+    ast_item_t* condition;
+    ast_t*      true_path;
+    ast_t*      else_path;
+    int         true_loc;
+    int         else_loc;
+  public:
+
+    void Generate(std::ostream& output) const;
+
+    ast_if_t(ast_item_t* condition, ast_t* true_path, ast_t* else_path, int true_loc, int else_loc);
+    ~ast_if_t();
+
+  };
 } // namespace deci
 
 
