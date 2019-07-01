@@ -8,11 +8,14 @@ namespace deci
   program_t::source_t CompileExpression(const char* fname, std::istream& input, bool interactive) {
     std::stringstream tempstr;
 
-    deci_scanner_t scanner(input, fname, interactive
-    );
-    deci::parser_t parser(scanner, tempstr);
+    deci_scanner_t scanner(input, fname, interactive);
+
+    deci::ast_t ast;
+    deci::parser_t parser(scanner, ast);
 
     parser.parse();
+
+    ast.Generate(tempstr);
 
     return AssembleProgram(tempstr);
   }

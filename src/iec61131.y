@@ -31,7 +31,7 @@
 %lex-param   { deci_scanner_t& scanner }
 
 %parse-param { deci_scanner_t& scanner }
-%parse-param { std::ostream& output }
+%parse-param { deci::ast_t& ast }
 
 %define parse.trace
 %define parse.error verbose
@@ -70,123 +70,117 @@
 %token               ELSE       "else"
 %token               END_IF     "end_if"
 
-%type  <int>         argument_list "argument list"
+%type <ast_arg_list_t*>         argument_list "argument list"
+
+%type <ast_t*>      statement_list
+%type <ast_item_t*> statement expression_statement expression
+%type <ast_item_t*> assign_expr or_expr xor_expr and_expr eql_expr cmp_expr
+%type <ast_item_t*> add_expr mul_expr pow_expr unary_expr postfix_expr primary_expr
+
+%type <std::string> CMP_OPERATOR
 
 %start entry
 
 %%
 
 entry:
-    statement_list
+    statement_list           { ast.Append($1); }
 ;
 
 statement_list:
-    statement 
-  | statement_list statement
+    statement                { $$ = new ast_t(); $$->Append($1); }
+  | statement_list statement { $$ = $1; $$->Append($2);          }
 ;
 
 statement:
-    ";"
-  | expression_statement ";"
-  | if_statement
+    ";"                      { $$ = nullptr; }
+  | expression_statement ";" { $$ = $1;      }
 ;
 
 expression_statement:
-    expression
+    expression              { $$ = $1; }
 ;
 
 expression:
-    assign_expr
+    assign_expr             { $$ = $1; }
 ;
 
 assign_expr:
-    or_expr                 { output << "ret" << std::endl;        }
-  | IDENTIFIER ":=" or_expr { output << "set " << $1 << std::endl; }
+    or_expr                 { $$ = new ast_return_t($1); }
+  | IDENTIFIER ":=" or_expr { $$ = new ast_set_t($1, $3); }
 ;
 
 or_expr:
-    xor_expr
-  | or_expr "or" xor_expr     { output << "bin or" << std::endl;  }
+    xor_expr                  { $$ = $1; }
+  | or_expr "or" xor_expr     { $$ = new ast_binary_t("or", $1, $3);  }
 ;
 
 xor_expr:
-    and_expr
-  | xor_expr "xor" and_expr   { output << "bin xor" << std::endl; }
+    and_expr                  { $$ = $1; }
+  | xor_expr "xor" and_expr   { $$ = new ast_binary_t("xor", $1, $3); }
 ;
 
 and_expr:
-    eql_expr
-  | and_expr "and" eql_expr   { output << "bin and" << std::endl; }
+    eql_expr                  { $$ = $1; }
+  | and_expr "and" eql_expr   { $$ = new ast_binary_t("and", $1, $3); }
 ;
 
 eql_expr:
-    cmp_expr
-  | eql_expr "=" cmp_expr     { output << "bin eq"  << std::endl; }
-  | eql_expr "<>" cmp_expr    { output << "bin neq" << std::endl; }
+    cmp_expr                  { $$ = $1; }
+  | eql_expr "=" cmp_expr     { $$ = new ast_binary_t("eq", $1, $3); }
+  | eql_expr "<>" cmp_expr    { $$ = new ast_binary_t("neq", $1, $3); }
 ;
 
 cmp_expr:
-    add_expr
-  | cmp_expr "<" add_expr     { output << "bin ls" << std::endl; }
-  | cmp_expr ">" add_expr     { output << "bin gr" << std::endl; }
-  | cmp_expr "<=" add_expr    { output << "bin le" << std::endl; }
-  | cmp_expr ">=" add_expr    { output << "bin ge" << std::endl; }
+    add_expr                       { $$ = $1; }
+  | cmp_expr CMP_OPERATOR add_expr { $$ = new ast_binary_t($2, $1, $3);  }
 ;
 
+CMP_OPERATOR:
+    "<"  { $$ = "ls"; }
+  | ">"  { $$ = "gr"; }
+  | "<=" { $$ = "le"; }
+  | ">=" { $$ = "ge"; }
+
 add_expr:
-    mul_expr
-  | add_expr "+" mul_expr     { output << "bin sum" << std::endl; }
-  | add_expr "-" mul_expr     { output << "bin sub" << std::endl; }
+    mul_expr                  { $$ = $1; }
+  | add_expr "+" mul_expr     { $$ = new ast_binary_t("sum", $1, $3); }
+  | add_expr "-" mul_expr     { $$ = new ast_binary_t("sub", $1, $3); }
 ;
 
 mul_expr:
-    pow_expr
-  | mul_expr "*"   pow_expr     { output << "bin mul" << std::endl; }
-  | mul_expr "mod" pow_expr     { output << "bin mod" << std::endl; }
-  | mul_expr "/"   pow_expr     { output << "bin div" << std::endl; }
+    pow_expr                  { $$ = $1; }
+  | mul_expr "*"   pow_expr   { $$ = new ast_binary_t("mul", $1, $3); }
+  | mul_expr "mod" pow_expr   { $$ = new ast_binary_t("mod", $1, $3); }
+  | mul_expr "/"   pow_expr   { $$ = new ast_binary_t("div", $1, $3); }
 ;
 
 pow_expr:
-    unary_expr
-  | pow_expr "**" unary_expr { output << "bin pow" << std::endl; }
+    unary_expr               { $$ = $1; }
+  | pow_expr "**" unary_expr { $$ = new ast_binary_t("pow", $1, $3); }
 ;
 
 unary_expr:
-    postfix_expr
-  | "not" unary_expr           { output << "unr not" << std::endl; }
-  | "-" unary_expr             { output << "unr neg" << std::endl; }
+    postfix_expr               { $$ = $1; }
+  | "not" unary_expr           { $$ = new ast_unary_t("not", $2 ); }
+  | "-" unary_expr             { $$ = new ast_unary_t("neg", $2 ); }
 ;
 
 postfix_expr:
-    primary_expr
-  | IDENTIFIER "(" ")"                { output << "call " << $1 << "\nresl" << std::endl; }
-  | IDENTIFIER "(" argument_list ")"  { output << "call " << $1 << "\ndrop " << $3 << "\nresl" << std::endl; }
+    primary_expr                      { $$ = $1; }
+  | IDENTIFIER "(" ")"                { $$ = new ast_postfix_t($1, nullptr); }
+  | IDENTIFIER "(" argument_list ")"  { $$ = new ast_postfix_t($1, $3); }
 ;
 
 argument_list:
-    or_expr                          { $$ = 1;      }
-  | argument_list "," or_expr        { $$ = $1 + 1; }
+    or_expr                          { $$ = new ast_arg_list_t(); $$->Append($1); }
+  | argument_list "," or_expr        { $$ = $1;                   $$->Append($3); }
 ;
 
 primary_expr:
-    NUMBER                    { output << "push " << $1 << std::endl; }
-  | IDENTIFIER                { output << "rval " << $1 << std::endl; }
-  | "(" expression ")"
-;
-
-if_statement:
-    "if" or_expr "then" then_tag  { std::cout << "if_statement" << std::endl; }
-;
-
-then_tag:
-    statement_list "elsif" elif_tag "else" statement_list "end_if"   { std::cout << "then_statement" << std::endl; }
-  | statement_list "elsif" elif_tag "end_if"                         { std::cout << "then_statement_2" << std::endl; }
-  | statement_list "end_if"                                          { std::cout << "then_statement_3" << std::endl; }
-;
-
-elif_tag:
-    or_expr "then" statement_list                                    { std::cout << "elif_statement" << std::endl; }
-  | elif_tag "elsif" or_expr "then" statement_list                   { std::cout << "elif_statement_2" << std::endl; }
+    NUMBER                    { $$ = new ast_number_t($1); }
+  | IDENTIFIER                { $$ = new ast_identifier_t($1); }
+  | "(" expression ")"        { $$ = $2; }
 ;
 
 %%

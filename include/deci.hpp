@@ -34,6 +34,7 @@
 #include "deci/func_lib.hpp"
 #include "deci/program_t.hpp"
 #include "deci/compiler_t.hpp"
+#include "deci/ast_t.hpp"
 
 namespace deci {
   

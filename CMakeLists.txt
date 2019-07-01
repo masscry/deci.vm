@@ -43,6 +43,7 @@ add_library(deci
   src/array_t.cpp
   src/dictionary_t.cpp
   src/compiler_t.cpp
+  src/ast_t.cpp
 
   include/deci.hpp
   include/deci/function_t.hpp
@@ -55,6 +56,7 @@ add_library(deci
   include/deci/array_t.hpp
   include/deci/dictionary_t.hpp
   include/deci/compiler_t.hpp
+  include/deci/ast_t.hpp
 )
 
 target_link_libraries(deci PRIVATE 
