@@ -281,7 +281,7 @@ namespace deci {
     pc = this->loop->Generate(output, pc);
 
     pc = this->condition->Generate(output, pc);
-    output << "jnz __repeat_" << repeat_loc << "__" << std::endl;
+    output << "jz __repeat_" << repeat_loc << "__" << std::endl;
     ++pc;
 
     return pc;
