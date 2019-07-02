@@ -30,23 +30,24 @@ namespace {
   }
 
   deci::value_t* SelectBuiltin(const char* token) {
-    CHECK_OPCODE("sum", deci::sum_t::Instance().Copy());
-    CHECK_OPCODE("sub", deci::sub_t::Instance().Copy());
-    CHECK_OPCODE("mul", deci::mul_t::Instance().Copy());
-    CHECK_OPCODE("div", deci::div_t::Instance().Copy());
-    CHECK_OPCODE( "ls", deci:: ls_t::Instance().Copy());
-    CHECK_OPCODE( "gr", deci:: gr_t::Instance().Copy());
-    CHECK_OPCODE( "le", deci:: le_t::Instance().Copy());
-    CHECK_OPCODE( "ge", deci:: ge_t::Instance().Copy());
-    CHECK_OPCODE( "eq", deci:: eq_t::Instance().Copy());
-    CHECK_OPCODE("neq", deci::neq_t::Instance().Copy());
-    CHECK_OPCODE( "or", deci:: or_t::Instance().Copy());
-    CHECK_OPCODE("and", deci::and_t::Instance().Copy());
-    CHECK_OPCODE("xor", deci::xor_t::Instance().Copy());
-    CHECK_OPCODE("pow", deci::pow_t::Instance().Copy());
-    CHECK_OPCODE("mod", deci::mod_t::Instance().Copy());
-    CHECK_OPCODE("not", deci::not_t::Instance().Copy());
-    CHECK_OPCODE("neg", deci::neg_t::Instance().Copy());
+    CHECK_OPCODE("sum"  , deci::sum_t::Instance().Copy());
+    CHECK_OPCODE("sub"  , deci::sub_t::Instance().Copy());
+    CHECK_OPCODE("mul"  , deci::mul_t::Instance().Copy());
+    CHECK_OPCODE("div"  , deci::div_t::Instance().Copy());
+    CHECK_OPCODE( "ls"  , deci:: ls_t::Instance().Copy());
+    CHECK_OPCODE( "gr"  , deci:: gr_t::Instance().Copy());
+    CHECK_OPCODE( "le"  , deci:: le_t::Instance().Copy());
+    CHECK_OPCODE( "ge"  , deci:: ge_t::Instance().Copy());
+    CHECK_OPCODE( "eq"  , deci:: eq_t::Instance().Copy());
+    CHECK_OPCODE("neq"  , deci::neq_t::Instance().Copy());
+    CHECK_OPCODE( "or"  , deci:: or_t::Instance().Copy());
+    CHECK_OPCODE("and"  , deci::and_t::Instance().Copy());
+    CHECK_OPCODE("xor"  , deci::xor_t::Instance().Copy());
+    CHECK_OPCODE("pow"  , deci::pow_t::Instance().Copy());
+    CHECK_OPCODE("mod"  , deci::mod_t::Instance().Copy());
+    CHECK_OPCODE("not"  , deci::not_t::Instance().Copy());
+    CHECK_OPCODE("neg"  , deci::neg_t::Instance().Copy());
+    CHECK_OPCODE("print", deci::print_t::Instance().Copy());
     return deci::string_t(token).Copy();
   }
 

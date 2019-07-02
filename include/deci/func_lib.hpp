@@ -203,6 +203,40 @@ namespace deci {
   #undef DEFINE_UNR_CLASS
   #undef DEFINE_UNR_CLASS_INT
 
+  class print_t:public function_t {
+
+    print_t(const print_t&) = delete;
+    print_t& operator =(const print_t&) = delete;
+
+    print_t(){
+      ;
+    }
+    
+    ~print_t() {
+      ;
+    }
+
+    size_t DoHashing() const override {
+      return std::hash<const void*>()(this);
+    }
+
+  public:
+
+    void Evaluate(vm_t&, const stack_t& stack, stack_t& local) override {
+      std::cout << stack.Top(0).ToText() << std::endl;     
+      local.Result(deci::nothing_t::Instance()); 
+    }
+
+    static print_t& Instance() {
+      static print_t self;
+      return self;
+    }
+
+    std::string ToText() const override {
+      return "deci::print_t";
+    }
+  };
+
 }
 
 #endif /* __DECI_FUNC_LIB_HEADER__ */
