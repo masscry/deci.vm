@@ -131,6 +131,23 @@ namespace deci
     ~ast_if_t();
 
   };
+
+  class ast_for_t final: public ast_item_t {
+    std::string identifier;
+    ast_item_t* start;
+    ast_item_t* finish;
+    ast_t*      loop;
+    ast_item_t* step;
+
+  public:
+
+    int Generate(std::ostream& output, int pc) const override;
+
+    ast_for_t(const std::string& identifier, ast_item_t* start, ast_item_t* finish, ast_t* loop, ast_item_t* step);
+    ~ast_for_t();
+  };
+
+
 } // namespace deci
 
 

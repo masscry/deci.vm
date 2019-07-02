@@ -194,4 +194,53 @@ namespace deci {
     delete this->else_path;
   }
 
+  int ast_for_t::Generate(std::ostream& output, int pc) const {
+    pc = start->Generate(output, pc);
+
+    output << "set " << this->identifier << std::endl;
+    ++pc;
+
+    int check_loc = pc;
+
+    output << ": __for_" << check_loc << "__" << std::endl;
+
+    pc = finish->Generate(output, pc);
+    output << "rval " << this->identifier << std::endl;
+    output << "bin gr" << std::endl;
+    pc += 2;
+
+    output << "jz __end_for_" << check_loc << "__" << std::endl;
+    ++pc;
+
+    pc = loop->Generate(output, pc);
+
+    if (this->step != nullptr) {
+      pc = this->step->Generate(output, pc);
+    }
+    else {
+      output << "push 1" << std::endl;
+      ++pc;
+    }
+    output << "rval " << this->identifier << std::endl;
+    output << "bin sum" << std::endl;
+    output << "set " << this->identifier << std::endl;
+    pc += 3;
+
+    output << "jmp __for_" << check_loc << "__" << std::endl;
+    ++pc;
+
+    output << ": __end_for_" << check_loc << "__" << std::endl;
+
+    return pc;
+  }
+
+  ast_for_t::ast_for_t(const std::string& identifier, ast_item_t* start, ast_item_t* finish, ast_t* loop, ast_item_t* step)
+    :identifier(identifier), start(start), finish(finish), loop(loop), step(step) {
+    ;
+  }
+
+  ast_for_t::~ast_for_t() {
+    ;
+  }
+
 }

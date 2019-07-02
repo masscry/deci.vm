@@ -15,7 +15,7 @@ namespace deci
 
     parser.parse();
 
-    int totalLength = ast.Generate(tempstr, 0);
+    ast.Generate(tempstr, 0);
 
     return AssembleProgram(tempstr);
   }

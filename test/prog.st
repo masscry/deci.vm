@@ -13,3 +13,12 @@ else
     6666;
   end_if;
 end_if;
+
+
+a:=0;
+
+for b := 1 to 10 by 2 do
+  a := a + 1;
+end_for;
+
+a;
