@@ -64,16 +64,21 @@
 %token               LE         "<="
 %token               POW        "**"
 %token               ST_END     ";"
-%token               IF         "if"
-%token               THEN       "then"
-%token               ELSIF      "elsif"
-%token               ELSE       "else"
-%token               END_IF     "end_if"
-%token               FOR        "for"
-%token               TO         "to"
-%token               BY         "by"
-%token               DO         "do"
-%token               END_FOR    "end_for"
+%token               IF         "IF"
+%token               THEN       "THEN"
+%token               ELSIF      "ELSIF"
+%token               ELSE       "ELSE"
+%token               END_IF     "END_IF"
+%token               FOR        "FOR"
+%token               TO         "TO"
+%token               BY         "BY"
+%token               DO         "DO"
+%token               END_FOR    "END_FOR"
+%token               WHILE      "WHILE"
+%token               END_WHILE  "END_WHILE"
+%token               REPEAT     "REPEAT"
+%token               UNTIL      "UNTIL"
+%token               END_REPEAT "END_REPEAT"
 
 %type <ast_arg_list_t*>         argument_list "argument list"
 
@@ -81,7 +86,7 @@
 %type <ast_item_t*> statement expression_statement expression
 %type <ast_item_t*> assign_expr or_expr xor_expr and_expr eql_expr cmp_expr
 %type <ast_item_t*> add_expr mul_expr pow_expr unary_expr postfix_expr primary_expr
-%type <ast_item_t*> if_statement for_statement
+%type <ast_item_t*> if_statement for_statement while_statement repeat_statement
 
 %type <std::string> CMP_OPERATOR
 
@@ -101,8 +106,10 @@ statement_list:
 statement:
     ";"                      { $$ = nullptr; }
   | expression_statement ";" { $$ = $1;      }
-  | if_statement ";"         { $$ = $1;      }
-  | for_statement ";"        { $$ = $1;      }
+  | if_statement         ";" { $$ = $1;      }
+  | for_statement        ";" { $$ = $1;      }
+  | while_statement      ";" { $$ = $1;      }
+  | repeat_statement     ";" { $$ = $1;      }
 ;
 
 expression_statement:
@@ -192,14 +199,23 @@ primary_expr:
 ;
 
 if_statement:
-    "if" or_expr "then" statement_list "else" statement_list "end_if" { $$ = new ast_if_t($2, $4,      $6); }
-  | "if" or_expr "then" statement_list "end_if"                       { $$ = new ast_if_t($2, $4, nullptr); }
+    "IF" or_expr "THEN" statement_list "ELSE" statement_list "END_IF" { $$ = new ast_if_t($2, $4,      $6); }
+  | "IF" or_expr "THEN" statement_list "END_IF"                       { $$ = new ast_if_t($2, $4, nullptr); }
 ;
 
 for_statement:
-    "for" IDENTIFIER ":=" or_expr "to" or_expr "by" or_expr "do" statement_list "end_for" { $$ = new ast_for_t($2, $4, $6, $10, $8);     }
-  | "for" IDENTIFIER ":=" or_expr "to" or_expr "do" statement_list "end_for"              { $$ = new ast_for_t($2, $4, $6, $8, nullptr); }
+    "FOR" IDENTIFIER ":=" or_expr "TO" or_expr "BY" or_expr "DO" statement_list "END_FOR" { $$ = new ast_for_t($2, $4, $6, $10, $8);     }
+  | "FOR" IDENTIFIER ":=" or_expr "TO" or_expr "DO" statement_list "END_FOR"              { $$ = new ast_for_t($2, $4, $6, $8, nullptr); }
 ;
+
+while_statement:
+    "WHILE" or_expr "DO" statement_list "END_WHILE"      { $$ = new ast_while_t($2, $4); }
+;
+
+repeat_statement:
+    "REPEAT" statement_list "UNTIL" or_expr "END_REPEAT" { $$ = new ast_repeat_t($4, $2); }
+;
+
 
 %%
 

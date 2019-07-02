@@ -147,6 +147,28 @@ namespace deci
     ~ast_for_t();
   };
 
+  class ast_while_t final: public ast_item_t {
+    ast_item_t* condition;
+    ast_t* loop;
+
+  public:
+    int Generate(std::ostream& output, int pc) const override;
+
+    ast_while_t(ast_item_t* condition, ast_t* loop);
+    ~ast_while_t();
+  };
+
+  class ast_repeat_t final: public ast_item_t {
+    ast_item_t* condition;
+    ast_t* loop;
+
+  public:
+    int Generate(std::ostream& output, int pc) const override;
+
+    ast_repeat_t(ast_item_t* condition, ast_t* loop);
+    ~ast_repeat_t();
+  };
+
 
 } // namespace deci
 

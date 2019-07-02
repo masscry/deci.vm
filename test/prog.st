@@ -22,3 +22,21 @@ for b := 1 to 10 by 2 do
 end_for;
 
 a;
+
+Index := 0;
+Sum := 0;
+WHILE Index < 10 DO
+    Sum := Sum + Index;
+    Index := Index + 1;
+END_WHILE;
+
+Sum;
+
+Index := 0;
+Sum := 0;
+REPEAT
+    Sum := Sum + Index;
+    Index := Index + 1;
+UNTIL Index >= 10 END_REPEAT;
+
+Sum;

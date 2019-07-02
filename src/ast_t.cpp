@@ -240,7 +240,61 @@ namespace deci {
   }
 
   ast_for_t::~ast_for_t() {
-    ;
+    delete this->start;
+    delete this->finish;
+    delete this->loop;
+    delete this->step;
+  }
+
+  int ast_while_t::Generate(std::ostream& output, int pc) const {
+
+    int while_loc = pc;
+
+    output << ": __while_" << while_loc << "__" << std::endl;
+    pc = this->condition->Generate(output, pc);
+    output << "jz __end_while_" << while_loc << "__" << std::endl;
+    ++pc;
+
+    pc = this->loop->Generate(output, pc);
+    output << "jmp __while_" << while_loc << "__" << std::endl;
+    ++pc;
+
+    output << ": __end_while_" <<while_loc << "__" << std::endl;
+    return pc;
+  }
+
+  ast_while_t::ast_while_t(ast_item_t* condition, ast_t* loop)
+    :condition(condition), loop(loop) {
+      ;
+  }
+
+  ast_while_t::~ast_while_t() {
+    delete this->condition;
+    delete this->loop;
+  }
+
+  int ast_repeat_t::Generate(std::ostream& output, int pc) const {
+
+    int repeat_loc = pc;
+
+    output << ": __repeat_" << repeat_loc << "__" << std::endl;
+    pc = this->loop->Generate(output, pc);
+
+    pc = this->condition->Generate(output, pc);
+    output << "jnz __repeat_" << repeat_loc << "__" << std::endl;
+    ++pc;
+
+    return pc;
+  }
+
+  ast_repeat_t::ast_repeat_t(ast_item_t* condition, ast_t* loop)
+    :condition(condition), loop(loop) {
+      ;
+  }
+ 
+  ast_repeat_t::~ast_repeat_t() {
+    delete this->condition;
+    delete this->loop;
   }
 
 }

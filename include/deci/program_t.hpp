@@ -31,6 +31,7 @@ namespace deci
     OP_JZ             , /**< Jump to point if zero on top */
     OP_JMP            , /**< Jump to point */
     OP_LABEL          , /**< Mark label    */
+    OP_JNZ            , /**< Jump to point if non-zero on top */
     OP_TOTAL            /**< Total opcodes */
   };
 

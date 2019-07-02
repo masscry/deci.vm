@@ -20,6 +20,7 @@ namespace {
     CHECK_OPCODE("jz"     ,  deci::OP_JZ     );
     CHECK_OPCODE("jmp"    ,  deci::OP_JMP    );
     CHECK_OPCODE(":"      ,  deci::OP_LABEL  );
+    CHECK_OPCODE("jnz"    ,  deci::OP_JNZ    );
     
     return deci::OP_UNDEFINED;
   }
@@ -167,6 +168,15 @@ namespace deci
       case OP_JMP:
       {
         JUMP_PC(dynamic_cast<number_t&>(*command.arg).Value());
+      }
+      case OP_JNZ:
+      {
+        double topVal = dynamic_cast<number_t&>(local.Top(0)).Value();
+        local.Drop(1);
+        if (topVal != 0.0) {
+          JUMP_PC(dynamic_cast<number_t&>(*command.arg).Value());
+        }
+        NEXT_PC();
       }
       default:
         throw std::runtime_error("Unknown Operation Code");

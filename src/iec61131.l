@@ -24,37 +24,42 @@ D             [0-9]
 
 %%
 
-FOR               { return deci::parser_t::make_FOR(DEFAULT_LOCATION_ARGUMENT);     }
-TO                { return deci::parser_t::make_TO(DEFAULT_LOCATION_ARGUMENT);      }
-BY                { return deci::parser_t::make_BY(DEFAULT_LOCATION_ARGUMENT);      }
-DO                { return deci::parser_t::make_DO(DEFAULT_LOCATION_ARGUMENT);      }
-END_FOR           { return deci::parser_t::make_END_FOR(DEFAULT_LOCATION_ARGUMENT); }
-IF                { return deci::parser_t::make_IF(DEFAULT_LOCATION_ARGUMENT);      }
-THEN              { return deci::parser_t::make_THEN(DEFAULT_LOCATION_ARGUMENT);    }
-ELSIF             { return deci::parser_t::make_ELSIF(DEFAULT_LOCATION_ARGUMENT);   }
-ELSE              { return deci::parser_t::make_ELSE(DEFAULT_LOCATION_ARGUMENT);    }
-END_IF            { return deci::parser_t::make_END_IF(DEFAULT_LOCATION_ARGUMENT);  }
-XOR               { return deci::parser_t::make_XOR(DEFAULT_LOCATION_ARGUMENT);     }
-OR                { return deci::parser_t::make_OR(DEFAULT_LOCATION_ARGUMENT);      }
-MOD               { return deci::parser_t::make_MOD(DEFAULT_LOCATION_ARGUMENT);     }
-NOT               { return deci::parser_t::make_NOT(DEFAULT_LOCATION_ARGUMENT);     }
-(AND|[&])         { return deci::parser_t::make_AND(DEFAULT_LOCATION_ARGUMENT);     }
-[=]               { return deci::parser_t::make_EQU(DEFAULT_LOCATION_ARGUMENT);     }
-\<\>              { return deci::parser_t::make_NEQU(DEFAULT_LOCATION_ARGUMENT);    }
-\>                { return deci::parser_t::make_GR(DEFAULT_LOCATION_ARGUMENT);      }
-\<                { return deci::parser_t::make_LS(DEFAULT_LOCATION_ARGUMENT);      }
-\>\=              { return deci::parser_t::make_GE(DEFAULT_LOCATION_ARGUMENT);      }
-\<\=              { return deci::parser_t::make_LE(DEFAULT_LOCATION_ARGUMENT);      }
-\*\*              { return deci::parser_t::make_POW(DEFAULT_LOCATION_ARGUMENT);     }
-\;                { return deci::parser_t::make_ST_END(DEFAULT_LOCATION_ARGUMENT);  }
-:=                { return deci::parser_t::make_ASSIGN(DEFAULT_LOCATION_ARGUMENT);  }
-\+                { return deci::parser_t::make_SUM(DEFAULT_LOCATION_ARGUMENT);     }
-\-                { return deci::parser_t::make_SUB(DEFAULT_LOCATION_ARGUMENT);     }
-\*                { return deci::parser_t::make_MUL(DEFAULT_LOCATION_ARGUMENT);     }
-,                 { return deci::parser_t::make_COMMA(DEFAULT_LOCATION_ARGUMENT);   }
-\/                { return deci::parser_t::make_DIV(DEFAULT_LOCATION_ARGUMENT);     }
-\)                { return deci::parser_t::make_BCLOSE(DEFAULT_LOCATION_ARGUMENT);  }
-\(                { return deci::parser_t::make_BOPEN(DEFAULT_LOCATION_ARGUMENT);   }
+WHILE             { return deci::parser_t::make_WHILE(DEFAULT_LOCATION_ARGUMENT);      }
+END_WHILE         { return deci::parser_t::make_END_WHILE(DEFAULT_LOCATION_ARGUMENT);  }
+REPEAT            { return deci::parser_t::make_REPEAT(DEFAULT_LOCATION_ARGUMENT);     }
+UNTIL             { return deci::parser_t::make_UNTIL(DEFAULT_LOCATION_ARGUMENT);      }
+END_REPEAT        { return deci::parser_t::make_END_REPEAT(DEFAULT_LOCATION_ARGUMENT); }
+FOR               { return deci::parser_t::make_FOR(DEFAULT_LOCATION_ARGUMENT);        }
+TO                { return deci::parser_t::make_TO(DEFAULT_LOCATION_ARGUMENT);         }
+BY                { return deci::parser_t::make_BY(DEFAULT_LOCATION_ARGUMENT);         }
+DO                { return deci::parser_t::make_DO(DEFAULT_LOCATION_ARGUMENT);         }
+END_FOR           { return deci::parser_t::make_END_FOR(DEFAULT_LOCATION_ARGUMENT);    }
+IF                { return deci::parser_t::make_IF(DEFAULT_LOCATION_ARGUMENT);         }
+THEN              { return deci::parser_t::make_THEN(DEFAULT_LOCATION_ARGUMENT);       }
+ELSIF             { return deci::parser_t::make_ELSIF(DEFAULT_LOCATION_ARGUMENT);      }
+ELSE              { return deci::parser_t::make_ELSE(DEFAULT_LOCATION_ARGUMENT);       }
+END_IF            { return deci::parser_t::make_END_IF(DEFAULT_LOCATION_ARGUMENT);     }
+XOR               { return deci::parser_t::make_XOR(DEFAULT_LOCATION_ARGUMENT);        }
+OR                { return deci::parser_t::make_OR(DEFAULT_LOCATION_ARGUMENT);         }
+MOD               { return deci::parser_t::make_MOD(DEFAULT_LOCATION_ARGUMENT);        }
+NOT               { return deci::parser_t::make_NOT(DEFAULT_LOCATION_ARGUMENT);        }
+(AND|[&])         { return deci::parser_t::make_AND(DEFAULT_LOCATION_ARGUMENT);        }
+[=]               { return deci::parser_t::make_EQU(DEFAULT_LOCATION_ARGUMENT);        }
+\<\>              { return deci::parser_t::make_NEQU(DEFAULT_LOCATION_ARGUMENT);       }
+\>                { return deci::parser_t::make_GR(DEFAULT_LOCATION_ARGUMENT);         }
+\<                { return deci::parser_t::make_LS(DEFAULT_LOCATION_ARGUMENT);         }
+\>\=              { return deci::parser_t::make_GE(DEFAULT_LOCATION_ARGUMENT);         }
+\<\=              { return deci::parser_t::make_LE(DEFAULT_LOCATION_ARGUMENT);         }
+\*\*              { return deci::parser_t::make_POW(DEFAULT_LOCATION_ARGUMENT);        }
+\;                { return deci::parser_t::make_ST_END(DEFAULT_LOCATION_ARGUMENT);     }
+:=                { return deci::parser_t::make_ASSIGN(DEFAULT_LOCATION_ARGUMENT);     }
+\+                { return deci::parser_t::make_SUM(DEFAULT_LOCATION_ARGUMENT);        }
+\-                { return deci::parser_t::make_SUB(DEFAULT_LOCATION_ARGUMENT);        }
+\*                { return deci::parser_t::make_MUL(DEFAULT_LOCATION_ARGUMENT);        }
+,                 { return deci::parser_t::make_COMMA(DEFAULT_LOCATION_ARGUMENT);      }
+\/                { return deci::parser_t::make_DIV(DEFAULT_LOCATION_ARGUMENT);        }
+\)                { return deci::parser_t::make_BCLOSE(DEFAULT_LOCATION_ARGUMENT);     }
+\(                { return deci::parser_t::make_BOPEN(DEFAULT_LOCATION_ARGUMENT);      }
 
 ({L}|_({L}|{D}))(_?({L}|{D}))* {
                     return deci::parser_t::make_IDENTIFIER(deci::ToUpper(deci::ToLower(yytext)), DEFAULT_LOCATION_ARGUMENT);
