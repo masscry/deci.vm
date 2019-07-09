@@ -22,7 +22,22 @@
 L            [A-Z]
 D             [0-9]
 
+%x DIV_COMMENTS
+%x BRACE_COMMENTS
+
 %%
+
+"/*"               { BEGIN(DIV_COMMENTS); }
+<DIV_COMMENTS>"*/" { BEGIN(INITIAL); }
+<DIV_COMMENTS>\n   { /* Ingnore multiline comments */ }
+<DIV_COMMENTS>.    { /* Ingnore multiline comments */ }
+
+"(*"                 { BEGIN(DIV_COMMENTS); }
+<BRACE_COMMENTS>"*)" { BEGIN(INITIAL); }
+<BRACE_COMMENTS>\n   { /* Ingnore multiline comments */ }
+<BRACE_COMMENTS>.    { /* Ingnore multiline comments */ }
+
+"//".*            { /* Ignore single line comments */ }
 
 WHILE             { return deci::parser_t::make_WHILE(DEFAULT_LOCATION_ARGUMENT);      }
 END_WHILE         { return deci::parser_t::make_END_WHILE(DEFAULT_LOCATION_ARGUMENT);  }
