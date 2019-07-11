@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 11)
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
+add_subdirectory(sha-2)
+
 BISON_TARGET(
   IEC61131_PARSER src/iec61131.y
   ${CMAKE_CURRENT_BINARY_DIR}/iec61131.y.cpp
@@ -60,6 +62,7 @@ add_library(deci
 
 target_link_libraries(deci PRIVATE 
   deci_scan_parse
+  sha-2
 )
 
 target_include_directories(deci
