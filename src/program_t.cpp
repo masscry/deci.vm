@@ -279,4 +279,12 @@ namespace deci
     return std::string("deci::program");
   }
 
+  value_t* program_t::Create(void *, size_t) const
+  {
+    //
+    // TODO: this requires to define storage format for data
+    //
+    throw std::runtime_error("Can't create program!");
+  }
+
 } // namespace deci

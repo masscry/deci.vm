@@ -74,5 +74,12 @@ namespace deci
       return std::string("deci::array_t");
     }
 
-  
+    value_t *array_t::Create(void *, size_t) const
+    {
+      //
+      // TODO: this requires to define storage format for data
+      //
+      throw std::runtime_error("Can't create array!");
+    }
+
 } // namespace deci

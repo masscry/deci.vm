@@ -50,4 +50,11 @@ namespace deci {
     return std::string(buffer);
   }
 
+  value_t* number_t::Create(void *data, size_t dataSize) const {
+    if ((data == nullptr) || (dataSize != sizeof(double))) {
+      throw std::runtime_error("Can't create number");
+    }
+    return new number_t(*static_cast<double*>(data));
+  }
+  
 }
