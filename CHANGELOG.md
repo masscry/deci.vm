@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+ - Support for all types of comments
+ - EXIT keyword for loops implemented
+
 ## [0.0.1] - 2019-07-04
 ### Added
  - Initial public release
