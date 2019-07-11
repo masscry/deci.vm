@@ -40,3 +40,24 @@ REPEAT
 UNTIL Index >= 10 END_REPEAT;
 
 print(Sum);
+
+
+Value2 := 0;
+WHILE 1 DO
+
+  Value := 0;
+  REPEAT
+    print(Value);
+    IF Value > 10 THEN
+      EXIT;
+    END_IF;
+    Value := Value + 1;
+  UNTIL 0 END_REPEAT;
+
+  print(Value2);
+  IF Value2 > 10 THEN
+    EXIT;
+  END_IF;
+  Value2 := Value2 + 1;
+
+END_WHILE;
