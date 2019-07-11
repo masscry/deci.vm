@@ -14,7 +14,7 @@ namespace deci
   /**
    * @brief Complete list of opcodes.
    */
-  enum opcode_t {
+  enum opcode_t: int8_t {
     OP_UNDEFINED = -1 , /**< Unknown opcode, can be found only in during assembly */
     OP_FIRST = 0      , /**< Helper for loops */
     OP_NOP = OP_FIRST , /**< No operation */
