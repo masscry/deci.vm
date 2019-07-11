@@ -1,0 +1,3 @@
+[submodule "sha-2"]
+	path = sha-2
+	url = git@github.com:masscry/sha-2.git
