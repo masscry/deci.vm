@@ -9,8 +9,23 @@ namespace deci
 {
 
   class ast_item_t {
+    ast_item_t* parent;
   public:
+
+    ast_item_t* Parent() const {
+      return this->parent;
+    }
+
+    void Parent(ast_item_t* parent) {
+      this->parent = parent;
+    }
+
+    virtual const std::string &EndLocationTag() const;
+    virtual int EndLocationPos() const;
+
     virtual int Generate(std::ostream& output, int pc) const = 0;
+
+    ast_item_t();
     virtual ~ast_item_t() = 0;
   };
 
@@ -109,7 +124,7 @@ namespace deci
   class ast_t final: public ast_item_t {
     std::vector<ast_item_t*> statements;
   public:
-
+ 
     void Append(ast_item_t* item);
 
     int Generate(std::ostream& output, int pc) const override;
@@ -117,6 +132,15 @@ namespace deci
     ast_t();
     ~ast_t();
 
+  };
+
+  class ast_exit_t final : public ast_item_t
+  {
+  public:
+    int Generate(std::ostream &output, int pc) const override;
+
+    ast_exit_t();
+    ~ast_exit_t();
   };
 
   class ast_if_t final: public ast_item_t {
@@ -132,7 +156,17 @@ namespace deci
 
   };
 
-  class ast_for_t final: public ast_item_t {
+  class ast_loop_t: public ast_item_t {
+  protected:
+    mutable int end_loc_pos;
+  public:
+    int EndLocationPos() const override;
+
+    ast_loop_t();
+    ~ast_loop_t();
+  };
+
+  class ast_for_t final: public ast_loop_t {
     std::string identifier;
     ast_item_t* start;
     ast_item_t* finish;
@@ -140,6 +174,7 @@ namespace deci
     ast_item_t* step;
 
   public:
+    const std::string& EndLocationTag() const override;
 
     int Generate(std::ostream& output, int pc) const override;
 
@@ -147,22 +182,26 @@ namespace deci
     ~ast_for_t();
   };
 
-  class ast_while_t final: public ast_item_t {
+  class ast_while_t final: public ast_loop_t {
     ast_item_t* condition;
     ast_t* loop;
 
   public:
-    int Generate(std::ostream& output, int pc) const override;
+    const std::string &EndLocationTag() const override;
+
+    int Generate(std::ostream &output, int pc) const override;
 
     ast_while_t(ast_item_t* condition, ast_t* loop);
     ~ast_while_t();
   };
 
-  class ast_repeat_t final: public ast_item_t {
+  class ast_repeat_t final: public ast_loop_t {
     ast_item_t* condition;
     ast_t* loop;
 
   public:
+    const std::string& EndLocationTag() const override;
+
     int Generate(std::ostream& output, int pc) const override;
 
     ast_repeat_t(ast_item_t* condition, ast_t* loop);

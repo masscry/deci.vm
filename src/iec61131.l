@@ -39,6 +39,7 @@ D             [0-9]
 
 "//".*            { /* Ignore single line comments */ }
 
+EXIT              { return deci::parser_t::make_EXIT(DEFAULT_LOCATION_ARGUMENT);       }
 WHILE             { return deci::parser_t::make_WHILE(DEFAULT_LOCATION_ARGUMENT);      }
 END_WHILE         { return deci::parser_t::make_END_WHILE(DEFAULT_LOCATION_ARGUMENT);  }
 REPEAT            { return deci::parser_t::make_REPEAT(DEFAULT_LOCATION_ARGUMENT);     }

@@ -1,23 +1,51 @@
 #include <deci.hpp>
+#include <iec61131.y.hpp>
 
 namespace deci {
 
-  ast_item_t::~ast_item_t() {
+  const std::string &ast_item_t::EndLocationTag() const {
+    static const std::string none("");
+
+    if (this->Parent() != nullptr) 
+    {
+      return this->Parent()->EndLocationTag();
+    }
+    return none;
+  }
+
+  int ast_item_t::EndLocationPos() const {
+    if (this->Parent() != nullptr)
+    {
+      return this->Parent()->EndLocationPos();
+    }
+    return -1;
+  }
+
+  ast_item_t::ast_item_t() : parent(nullptr)
+  { 
     ;
   }
 
-  int ast_t::Generate(std::ostream& output, int pc) const {
+  ast_item_t::~ast_item_t() 
+  {
+    ;
+  }
+
+  int ast_t::Generate(std::ostream& output, int pc) const 
+  {
     for (auto item: this->statements) {
       pc = item->Generate(output, pc);
     }
     return pc;
   }
 
-  void ast_t::Append(ast_item_t* item) {
+  void ast_t::Append(ast_item_t* item) 
+  {
     this->statements.push_back(item);
   }
 
-  ast_t::ast_t():statements() {
+  ast_t::ast_t():statements() 
+  {
     ;
   }
 
@@ -194,6 +222,12 @@ namespace deci {
     delete this->else_path;
   }
 
+  const std::string &ast_for_t::EndLocationTag() const
+  {
+    static const std::string repeatText("for");
+    return repeatText;
+  }
+
   int ast_for_t::Generate(std::ostream& output, int pc) const {
     pc = start->Generate(output, pc);
 
@@ -212,6 +246,7 @@ namespace deci {
     output << "jz __end_for_" << check_loc << "__" << std::endl;
     ++pc;
 
+    this->end_loc_pos = check_loc;
     pc = loop->Generate(output, pc);
 
     if (this->step != nullptr) {
@@ -255,12 +290,19 @@ namespace deci {
     output << "jz __end_while_" << while_loc << "__" << std::endl;
     ++pc;
 
+    this->end_loc_pos = while_loc;
     pc = this->loop->Generate(output, pc);
     output << "jmp __while_" << while_loc << "__" << std::endl;
     ++pc;
 
     output << ": __end_while_" <<while_loc << "__" << std::endl;
     return pc;
+  }
+
+  const std::string &ast_while_t::EndLocationTag() const 
+  {
+    static const std::string whileText("while");
+    return whileText;
   }
 
   ast_while_t::ast_while_t(ast_item_t* condition, ast_t* loop)
@@ -273,16 +315,25 @@ namespace deci {
     delete this->loop;
   }
 
+  const std::string &ast_repeat_t::EndLocationTag() const
+  {
+    static const std::string repeatText("repeat");
+    return repeatText;
+  }
+
   int ast_repeat_t::Generate(std::ostream& output, int pc) const {
 
     int repeat_loc = pc;
 
+    this->end_loc_pos = repeat_loc;
     output << ": __repeat_" << repeat_loc << "__" << std::endl;
     pc = this->loop->Generate(output, pc);
 
     pc = this->condition->Generate(output, pc);
     output << "jz __repeat_" << repeat_loc << "__" << std::endl;
     ++pc;
+
+    output << ": __end_repeat_" << repeat_loc << "__" << std::endl;
 
     return pc;
   }
@@ -296,5 +347,43 @@ namespace deci {
     delete this->condition;
     delete this->loop;
   }
+
+  int ast_exit_t::Generate(std::ostream &output, int pc) const {
+
+    int                end_loc = this->EndLocationPos();
+    const std::string& end_tag = this->EndLocationTag();
+
+    if (end_loc < 0) 
+    {
+      throw std::runtime_error("Exit statement not allowed in non-loop context");
+    }
+
+    output << "jmp __end_" << end_tag << "_" << end_loc << "__" << std::endl;
+    return pc + 1;
+  }
+
+  ast_exit_t::ast_exit_t() {
+    ;
+  }
+
+  ast_exit_t::~ast_exit_t() {
+    ;
+  }
+
+  int ast_loop_t::EndLocationPos() const
+  {
+    return this->end_loc_pos;
+  }
+
+  ast_loop_t::ast_loop_t(): end_loc_pos(-1)
+  {
+
+  }
+
+  ast_loop_t::~ast_loop_t() 
+  {
+
+  }
+
 
 }
