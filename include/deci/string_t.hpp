@@ -37,6 +37,9 @@ namespace deci {
 
     explicit string_t(const std::string& copy);
     explicit string_t(const string_t& copy);
+    explicit string_t(std::istream& input);
+
+    void Serialize(std::ostream& output) const;
 
     ~string_t();
   };

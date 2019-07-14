@@ -41,4 +41,16 @@ namespace deci {
       ;
     }
 
+    string_t::string_t(std::istream& input):value_t(),val() {
+      while((input.peek() != 0) && (input.good())) {
+        val.push_back(input.get());
+      }
+    }
+
+  void string_t::Serialize(std::ostream& output) const
+  {
+    output.write(this->val.data(), this->val.size());
+  }
+
+
 }

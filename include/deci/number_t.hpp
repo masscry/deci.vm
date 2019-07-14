@@ -25,6 +25,7 @@ namespace deci {
 
     explicit number_t(double val);
     explicit number_t(const number_t& copy);
+    explicit number_t(std::istream& input);
 
     double Value() const {
       return this->val;
@@ -39,6 +40,8 @@ namespace deci {
     void Delete() override;
 
     std::string ToText() const override;
+
+    void Serialize(std::ostream& output) const;
 
     ~number_t();
   };

@@ -3,6 +3,15 @@
 
 namespace deci {
 
+  number_t::number_t(std::istream& input)
+    :val(0.0)
+  {
+    input.read(reinterpret_cast<char*>(&this->val), sizeof(this->val));
+    if (input.gcount() != sizeof(this->val)) {
+      throw std::runtime_error("Invalid Number Format");
+    }
+  }
+
   number_t::number_t()
     :val(0.0)
   {
@@ -48,6 +57,11 @@ namespace deci {
     char buffer[64];
     snprintf(buffer, sizeof(buffer), "%.*g", DECIMAL_DIG, this->val);
     return std::string(buffer);
+  }
+
+  void number_t::Serialize(std::ostream& output) const
+  {
+    output.write(reinterpret_cast<const char*>(&this->val), sizeof(this->val));
   }
 
 }

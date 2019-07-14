@@ -45,6 +45,7 @@ add_library(deci
   src/dictionary_t.cpp
   src/compiler_t.cpp
   src/ast_t.cpp
+  src/serializer.cpp
 
   include/deci.hpp
   include/deci/function_t.hpp
