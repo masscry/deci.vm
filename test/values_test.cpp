@@ -1,4 +1,5 @@
 #include <deci.hpp>
+#include <sstream>
 
 void test_nothing() {
   using namespace deci;
@@ -32,6 +33,14 @@ void test_number() {
 
   copy->Delete();
   item->Delete();
+
+  std::stringstream temp;
+
+  deci::WriteObject<number_t>(temp, number_t(1234.5));
+  number_t* num = deci::ReadObject<number_t>(temp);
+  assert(num->Value() == 1234.5);
+  num->Delete();
+
 }
 
 void test_array() {
