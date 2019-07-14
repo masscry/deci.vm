@@ -51,8 +51,6 @@ namespace deci {
     inline bool IsNothing() const;
 
     virtual type_t Type() const = 0;
-    
-    virtual value_t* Create(void* data, size_t dataSize) const = 0;
     virtual value_t* Copy() const = 0;
     virtual void Delete() = 0;
     virtual std::string ToText() const = 0;
@@ -87,11 +85,9 @@ namespace deci {
       ;
     }
 
-    value_t *Create(void *data, size_t dataSize) const override;
-
     static value_t& Instance() {
       static nothing_t self;
-      return self;
+      return self;      
     }
     
   };

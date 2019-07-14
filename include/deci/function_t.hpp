@@ -39,13 +39,6 @@ namespace deci {
       ;
     }
 
-    value_t *Create(void *, size_t dataSize) const override {
-      if (dataSize != 0) {
-        throw std::runtime_error("Can't create function");
-      }
-      return const_cast<function_t *>(this);
-    }
-
   };
 
 }

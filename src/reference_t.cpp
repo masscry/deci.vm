@@ -39,12 +39,4 @@ namespace deci {
     return std::string("deci::reference_t");
   }
 
-  value_t* reference_t::Create(void*, size_t) const {
-    //
-    // TODO: in future maybe we may have some way to create it, but this requires
-    //       some additional support from VM
-    //
-    throw std::runtime_error("Can't create references!");
-  }
-
 }

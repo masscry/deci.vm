@@ -39,9 +39,8 @@ namespace deci {
     explicit string_t(const string_t& copy);
 
     ~string_t();
-
-    value_t *Create(void *data, size_t dataSize) const override;
   };
+  
 }
 
 #endif /* __DECI_STRING_T_HEADER__ */

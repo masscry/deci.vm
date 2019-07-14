@@ -41,11 +41,4 @@ namespace deci {
       ;
     }
 
-    value_t* string_t::Create(void* data, size_t dataSize) const {
-      if ((data == nullptr) || (dataSize == 0)) {
-        throw std::runtime_error("Can't create string");
-      }
-      return new string_t(static_cast<char*>(data));
-    }
-
 }

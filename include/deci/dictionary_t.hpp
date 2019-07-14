@@ -66,7 +66,6 @@ namespace deci
 
     std::string ToText() const override;
 
-    value_t *Create(void *data, size_t dataSize) const override;
   };
   
 } // namespace deci

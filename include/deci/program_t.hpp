@@ -77,7 +77,6 @@ namespace deci
 
     void Delete() override;
 
-    value_t *Create(void *data, size_t dataSize) const override;
   };
 
   program_t::source_t AssembleProgram(std::istream& input);

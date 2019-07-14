@@ -41,8 +41,6 @@ namespace deci {
     std::string ToText() const override;
 
     ~number_t();
-
-    value_t *Create(void *data, size_t dataSize) const override;
   };
   
 }

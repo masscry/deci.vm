@@ -163,12 +163,5 @@ namespace deci
   dictionary_t::dictionary_t():value_t(), storage() {
     ;
   }
-
-  value_t* dictionary_t::Create(void*, size_t) const {
-    //
-    // TODO: this requires to define storage format for data
-    //
-    throw std::runtime_error("Can't create references!");
-  }
   
 } // namespace deci
